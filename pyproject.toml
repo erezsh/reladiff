@@ -6,7 +6,7 @@ authors = ["Datafold <data-diff@datafold.com>"]
 license = "MIT"
 readme = "README.md"
 repository = "https://github.com/datafold/data-diff"
-documentation = ""
+documentation = "https://sqeleton.readthedocs.io/en/latest/"
 classifiers = [
     "Intended Audience :: Developers",
     "Intended Audience :: Information Technology",
@@ -23,13 +23,14 @@ classifiers = [
 packages = [{ include = "data_diff" }]
 
 [tool.poetry.dependencies]
-python = "^3.7"
-runtype = "^0.2.6"
+python = "^3.8"
+runtype = "^0.4.2"
 dsnparse = "*"
 click = "^8.1"
 rich = "*"
 toml = "^0.10.2"
-sqeleton = "^0.0.5"
+sqeleton = "0.1.0"
+# sqeleton = {path="../sqeleton", develop=true}
 mysql-connector-python = {version="8.0.29", optional=true}
 psycopg2 = {version="*", optional=true}
 snowflake-connector-python = {version="^2.7.2", optional=true}
@@ -42,7 +43,7 @@ duckdb = {version="^0.6.0", optional=true}
 [tool.poetry.dev-dependencies]
 parameterized = "*"
 unittest-parallel = "*"
-preql = "^0.2.19"
+# preql = "^0.2.19"
 mysql-connector-python = "*"
 psycopg2 = "*"
 snowflake-connector-python = "^2.7.2"

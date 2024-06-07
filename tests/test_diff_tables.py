@@ -484,10 +484,10 @@ class TestVaryingAlphanumericKeys(DiffTestCase):
         diff = list(differ.diff_tables(self.a, self.b))
         self.assertEqual(diff, [("-", (str(self.new_alphanum), "This one is different"))])
 
-        self.connection.query(
+        self.connection.query([
             self.src_table.insert_row("@@@", "<-- this bad value should not break us"),
             commit,
-        )
+        ])
 
         self.a = table_segment(self.connection, self.table_src_path, "id", "text_comment", case_sensitive=False)
         self.b = table_segment(self.connection, self.table_dst_path, "id", "text_comment", case_sensitive=False)
