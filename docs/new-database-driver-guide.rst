@@ -143,7 +143,7 @@ For more information, read their docs:
 Because comparing data between 2 databases requires both the data to be in the same format - we have normalization functions.
 
 Databases can have the same data in different formats, e.g. ``DECIMAL`` vs ``FLOAT`` vs ``VARCHAR``, with different precisions.
-DataDiff works by converting the values to ``VARCHAR`` and comparing it.
+Reladiff works by converting the values to ``VARCHAR`` and comparing it.
 Your normalize_number/normalize_timestamp functions should account for differing precisions between columns.
 
 These functions accept an SQL code fragment, and returns a new code fragment representing the appropriate computation.

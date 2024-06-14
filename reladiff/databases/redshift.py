@@ -1,8 +1,8 @@
 from sqeleton.databases import redshift
-from .base import DatadiffDialect
+from .base import ReladiffDialect
 
 
-class Dialect(redshift.Dialect, redshift.Mixin_MD5, redshift.Mixin_NormalizeValue, DatadiffDialect):
+class Dialect(redshift.Dialect, redshift.Mixin_MD5, redshift.Mixin_NormalizeValue, ReladiffDialect):
     pass
 
 

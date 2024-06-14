@@ -1,8 +1,8 @@
 from sqeleton.databases import bigquery
-from .base import DatadiffDialect
+from .base import ReladiffDialect
 
 
-class Dialect(bigquery.Dialect, bigquery.Mixin_MD5, bigquery.Mixin_NormalizeValue, DatadiffDialect):
+class Dialect(bigquery.Dialect, bigquery.Mixin_MD5, bigquery.Mixin_NormalizeValue, ReladiffDialect):
     pass
 
 

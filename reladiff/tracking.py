@@ -20,7 +20,7 @@ END_EVENT = "os_diff_run_end"
 TOKEN = "2HgtM4Hcq9BmeiCqNYhz7O9tkjM"
 TIMEOUT = 8
 
-DEFAULT_PROFILE = os.path.expanduser("~/.datadiff.toml")
+DEFAULT_PROFILE = os.path.expanduser("~/.reladiff.toml")
 
 
 def _load_profile():

@@ -1,8 +1,8 @@
 from sqeleton.databases import duckdb
-from .base import DatadiffDialect
+from .base import ReladiffDialect
 
 
-class Dialect(duckdb.Dialect, duckdb.Mixin_MD5, duckdb.Mixin_NormalizeValue, DatadiffDialect):
+class Dialect(duckdb.Dialect, duckdb.Mixin_MD5, duckdb.Mixin_NormalizeValue, ReladiffDialect):
     pass
 
 

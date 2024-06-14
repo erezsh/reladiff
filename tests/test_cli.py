@@ -9,7 +9,7 @@ from .common import DiffTestCase, CONN_STRINGS
 from .test_diff_tables import test_each_database
 
 
-def run_datadiff_cli(*args):
+def run_reladiff_cli(*args):
     try:
         stdout = subprocess.check_output(
             [sys.executable, "-m", "reladiff", "--no-tracking"] + list(args), stderr=subprocess.PIPE
@@ -47,12 +47,12 @@ class TestCLI(DiffTestCase):
 
     def test_basic(self):
         conn_str = CONN_STRINGS[self.db_cls]
-        diff = run_datadiff_cli(conn_str, self.table_src_name, conn_str, self.table_dst_name)
+        diff = run_reladiff_cli(conn_str, self.table_src_name, conn_str, self.table_dst_name)
         assert len(diff) == 1
 
     def test_options(self):
         conn_str = CONN_STRINGS[self.db_cls]
-        diff = run_datadiff_cli(
+        diff = run_reladiff_cli(
             conn_str,
             self.table_src_name,
             conn_str,

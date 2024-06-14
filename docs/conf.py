@@ -153,7 +153,7 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    (master_doc, "Datadiff.tex", "Datadiff Documentation", "Erez Shinan", "manual"),
+    (master_doc, "Reladiff.tex", "Reladiff Documentation", "Erez Shinan", "manual"),
 ]
 
 
@@ -161,7 +161,7 @@ latex_documents = [
 
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
-man_pages = [(master_doc, "Datadiff", "Datadiff Documentation", [author], 1)]
+man_pages = [(master_doc, "Reladiff", "Reladiff Documentation", [author], 1)]
 
 
 # -- Options for Texinfo output -------------------------------------------
@@ -172,10 +172,10 @@ man_pages = [(master_doc, "Datadiff", "Datadiff Documentation", [author], 1)]
 texinfo_documents = [
     (
         master_doc,
-        "Datadiff",
-        "Datadiff Documentation",
+        "Reladiff",
+        "Reladiff Documentation",
         author,
-        "Datadiff",
+        "Reladiff",
         "One line description of project.",
         "Miscellaneous",
     ),

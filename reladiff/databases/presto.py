@@ -1,8 +1,8 @@
 from sqeleton.databases import presto
-from .base import DatadiffDialect
+from .base import ReladiffDialect
 
 
-class Dialect(presto.Dialect, presto.Mixin_MD5, presto.Mixin_NormalizeValue, DatadiffDialect):
+class Dialect(presto.Dialect, presto.Mixin_MD5, presto.Mixin_NormalizeValue, ReladiffDialect):
     pass
 
 
