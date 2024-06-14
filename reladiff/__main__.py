@@ -79,7 +79,7 @@ class MyHelpFormatter(click.HelpFormatter):
         self.indent_increment = 6
 
     def write_usage(self, prog: str, args: str = "", prefix: Optional[str] = None) -> None:
-        self.write(f"data-diff v{__version__} - efficiently diff rows across database tables.\n\n")
+        self.write(f"reladiff v{__version__} - efficiently diff rows across database tables.\n\n")
         self.write("Usage:\n")
         self.write(f"  * In-db diff:    {prog} <database_a> <table_a> <table_b> [OPTIONS]\n")
         self.write(f"  * Cross-db diff: {prog} <database_a> <table_a> <database_b> <table_b> [OPTIONS]\n")
@@ -118,7 +118,7 @@ click.Context.formatter_class = MyHelpFormatter
 @click.option(
     "--bisection-threshold",
     default=None,
-    help=f"Minimal bisection threshold. Below it, data-diff will download the data and compare it locally. Default={DEFAULT_BISECTION_THRESHOLD}.",
+    help=f"Minimal bisection threshold. Below it, reladiff will download the data and compare it locally. Default={DEFAULT_BISECTION_THRESHOLD}.",
     metavar="NUM",
 )
 @click.option(
@@ -148,7 +148,7 @@ click.Context.formatter_class = MyHelpFormatter
 @click.option(
     "--case-sensitive",
     is_flag=True,
-    help="Column names are treated as case-sensitive. Otherwise, data-diff corrects their case according to schema.",
+    help="Column names are treated as case-sensitive. Otherwise, reladiff corrects their case according to schema.",
 )
 @click.option(
     "--assume-unique-key",

@@ -145,7 +145,7 @@ class HashDiffer(TableDiffer):
 
         # When benchmarking, we want the ability to skip checksumming. This
         # allows us to download all rows for comparison in performance. By
-        # default, data-diff will checksum the section first (when it's below
+        # default, reladiff will checksum the section first (when it's below
         # the threshold) and _then_ download it.
         if BENCHMARK:
             if max_rows < self.bisection_threshold:

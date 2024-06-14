@@ -5,10 +5,10 @@
 
    python-api
 
-data-diff
+reladiff
 ---------
 
-**Data-diff** is a command-line tool and Python library to efficiently diff
+**reladiff** is a command-line tool and Python library to efficiently diff
 rows across two different databases.
 
 ⇄  Verifies across many different databases (e.g. *PostgreSQL* -> *Snowflake*) !

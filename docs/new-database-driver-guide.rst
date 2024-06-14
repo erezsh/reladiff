@@ -1,9 +1,9 @@
-How to implement a new database driver for data-diff
+How to implement a new database driver for reladiff
 ====================================================
 
 First, read through the `CONTRIBUTING.md <https://github.com/erezsh/reladiff/blob/master/CONTRIBUTING.md>`_ document.
 
-Make sure data-diff is set up for development, and that all the tests pass (try to at least set it up for mysql and postgresql)
+Make sure reladiff is set up for development, and that all the tests pass (try to at least set it up for mysql and postgresql)
 
 Look at the other database drivers for example and inspiration.
 
@@ -20,9 +20,9 @@ These dependencies should be specified in the ``pyproject.toml`` file, in ``[too
     [tool.poetry.extras]
     postgresql = ["psycopg2"]
 
-Then, users can install the dependencies needed for your database driver, with ``pip install 'data-diff[postgresql]``.
+Then, users can install the dependencies needed for your database driver, with ``pip install 'reladiff[postgresql]``.
 
-This way, data-diff can support a wide variety of drivers, without requiring our users to install libraries that they won't use.
+This way, reladiff can support a wide variety of drivers, without requiring our users to install libraries that they won't use.
 
 2. Implement a database module
 ----------------------------
@@ -96,7 +96,7 @@ Documentation:
 :data:`TYPE_CLASSES`
 ~~~~~~~~~~~~~~~~~~~~~~
 
-Each database class must have a ``TYPE_CLASSES`` dictionary, which maps between the string data-type, as returned by querying the table schema, into the appropriate data-diff type class, i.e. a subclass of ``database_types.ColType``.
+Each database class must have a ``TYPE_CLASSES`` dictionary, which maps between the string data-type, as returned by querying the table schema, into the appropriate reladiff type class, i.e. a subclass of ``database_types.ColType``.
 
 :data:`ROUNDS_ON_PREC_LOSS`
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

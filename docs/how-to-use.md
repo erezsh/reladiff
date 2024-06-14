@@ -6,10 +6,10 @@ Run the following command:
 
 ```bash
     # Same-DB diff, using outer join
-    $ data-diff  DB  TABLE1  TABLE2  [options]
+    $ reladiff  DB  TABLE1  TABLE2  [options]
 
     # Cross-DB diff, using hashes
-    $ data-diff  DB1  TABLE1  DB2  TABLE2  [options]
+    $ reladiff  DB1  TABLE1  DB2  TABLE2  [options]
 ```
 
 Where DB is either a database URL that's compatible with SQLAlchemy, or the name of a database specified in a configuration file.
@@ -58,7 +58,7 @@ it's recommended to surround them with quotes.
 
 ### How to use with a configuration file
 
-Data-diff lets you load the configuration for a run from a TOML file.
+reladiff lets you load the configuration for a run from a TOML file.
 
 **Reasons to use a configuration file:**
 
@@ -68,7 +68,7 @@ Data-diff lets you load the configuration for a run from a TOML file.
 
 - Gives you fine-grained control over the settings switches, without requiring any Python code.
 
-Use `--conf` to specify that path to the configuration file. data-diff will load the settings from `run.default`, if it's defined.
+Use `--conf` to specify that path to the configuration file. reladiff will load the settings from `run.default`, if it's defined.
 
 Then you can, optionally, use `--run` to choose to load the settings of a specific run, and override the settings `run.default`. (all runs extend `run.default`, like inheritance).
 
@@ -99,11 +99,11 @@ verbose = false
 2.table = "rating_del1"
 ```
 
-In this example, running `data-diff --conf myconfig.toml --run test_diff` will compare between `rating` and `rating_del1`.
+In this example, running `reladiff --conf myconfig.toml --run test_diff` will compare between `rating` and `rating_del1`.
 It will use the `timestamp` column as the update column, as specified in `run.default`. However, it won't be verbose, since that
 flag is overwritten to `false`.
 
-Running it with `data-diff --conf myconfig.toml --run test_diff -v` will set verbose back to `true`.
+Running it with `reladiff --conf myconfig.toml --run test_diff -v` will set verbose back to `true`.
 
 
 ## How to use from Python
@@ -132,4 +132,4 @@ for different_row in diff_tables(table1, table2):
     print(plus_or_minus, columns)
 ```
 
-Run `help(diff_tables)` or [read the docs](https://data-diff.readthedocs.io/en/latest/) to learn about the different options.
+Run `help(diff_tables)` or [read the docs](https://reladiff.readthedocs.io/en/latest/) to learn about the different options.
