@@ -1,7 +1,7 @@
-# **data-diff**
+# **reladiff**
 
-## What is `data-diff`?
-data-diff is a **free, open-source tool** that enables data professionals to detect differences in values between any two tables. It's fast, easy to use, and reliable. Even at massive scale.
+## What is `reladiff`?
+reladiff is a **free, open-source tool** that enables data professionals to detect differences in values between any two tables. It's fast, easy to use, and reliable. Even at massive scale.
 
 ## Documentation
 
@@ -52,29 +52,29 @@ If a database is not on the list, we'd still love to support it. [Please open an
 
 ### Installation
 
-#### First, install `data-diff` using `pip`.
+#### First, install `reladiff` using `pip`.
 
 ```
-pip install data-diff
+pip install reladiff
 ```
 
 #### Then, install one or more driver(s) specific to the database(s) you want to connect to.
 
-- `pip install 'data-diff[mysql]'`
+- `pip install 'reladiff[mysql]'`
 
-- `pip install 'data-diff[postgresql]'`
+- `pip install 'reladiff[postgresql]'`
 
-- `pip install 'data-diff[snowflake]'`
+- `pip install 'reladiff[snowflake]'`
 
-- `pip install 'data-diff[presto]'`
+- `pip install 'reladiff[presto]'`
 
-- `pip install 'data-diff[oracle]'`
+- `pip install 'reladiff[oracle]'`
 
-- `pip install 'data-diff[trino]'`
+- `pip install 'reladiff[trino]'`
 
-- `pip install 'data-diff[clickhouse]'`
+- `pip install 'reladiff[clickhouse]'`
 
-- `pip install 'data-diff[vertica]'`
+- `pip install 'reladiff[vertica]'`
 
 - For BigQuery, see: https://pypi.org/project/google-cloud-bigquery/
 
@@ -82,10 +82,10 @@ _Some drivers have dependencies that cannot be installed using `pip` and still n
 
 ### Run your first diff
 
-Once you've installed `data-diff`, you can run it from the command line.
+Once you've installed `reladiff`, you can run it from the command line.
 
 ```
-data-diff DB1_URI TABLE1_NAME DB2_URI TABLE2_NAME [OPTIONS]
+reladiff DB1_URI TABLE1_NAME DB2_URI TABLE2_NAME [OPTIONS]
 ```
 
 Be sure to read [the docs](TODO) for detailed instructions how to build one of these commands depending on your database setup.
@@ -94,7 +94,7 @@ Be sure to read [the docs](TODO) for detailed instructions how to build one of t
 Here's an example command for your copy/pasting, taken from the screenshot above when we diffed data between Snowflake and Postgres.
 
 ```
-data-diff \
+reladiff \
   postgresql://<username>:'<password>'@localhost:5432/<database> \
   <table> \
   "snowflake://<username>:<password>@<password>/<DATABASE>/<SCHEMA>?warehouse=<WAREHOUSE>&role=<ROLE>" \
@@ -109,7 +109,7 @@ data-diff \
 Here's a code example from [the video](https://www.loom.com/share/682e4b7d74e84eb4824b983311f0a3b2), where we compare data between two Snowflake tables within one database.
 
 ```
-data-diff \
+reladiff \
   "snowflake://<username>:<password>@<password>/<DATABASE>/<SCHEMA_1>?warehouse=<WAREHOUSE>&role=<ROLE>" <TABLE_1> \
   <SCHEMA_2>.<TABLE_2> \
   -k org_id \
@@ -124,9 +124,9 @@ In both code examples, I've used `<>` carrots to represent values that **should 
 
 ### We're here to help!
 
-We know that in some cases, the data-diff command can become long and dense. And maybe you're new to the command line.
+We know that in some cases, the reladiff command can become long and dense. And maybe you're new to the command line.
 
-* We're here to help [on slack](https://locallyoptimistic.slack.com/archives/C03HUNGQV0S) if you have ANY questions as you use `data-diff` in your workflow.
+* We're here to help [on slack](https://locallyoptimistic.slack.com/archives/C03HUNGQV0S) if you have ANY questions as you use `reladiff` in your workflow.
 * You can also post a question in [GitHub Discussions](https://github.com/erezsh/reladiff/discussions).
 
 
@@ -151,7 +151,7 @@ Big thanks to everyone who contributed so far:
 
 ## Technical Explanation
 
-Check out this [technical explanation](TODO) of how data-diff works.
+Check out this [technical explanation](TODO) of how reladiff works.
 
 ## License
 

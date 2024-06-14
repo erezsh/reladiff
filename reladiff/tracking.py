@@ -1,5 +1,5 @@
 #
-# This module contains all the functionality related to the anonymous tracking of data-diff use.
+# This module contains all the functionality related to the anonymous tracking of reladiff use.
 #
 
 import logging
