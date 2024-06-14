@@ -1,12 +1,16 @@
 .. toctree::
    :maxdepth: 2
-   :caption: API Reference
+   :caption: Reference
    :hidden:
 
+   supported-databases
+   how-to-use
    python-api
+   technical-explanation
+   new-database-driver-guide
 
-reladiff
----------
+Introduction
+------------
 
 **reladiff** is a command-line tool and Python library to efficiently diff
 rows across two different databases.
@@ -23,13 +27,46 @@ rows across two different databases.
 
 For more information, `See our README <https://github.com/erezsh/reladiff#readme>`_
 
+How to install
+--------------
+
+Requires Python 3.7+ with pip.
+
+::
+
+    pip install reladiff
+
+For installing with 3rd-party database connectors, use the following syntax:
+
+::
+
+    pip install "reladiff[db1,db2]"
+
+    e.g.
+    pip install "reladiff[mysql,postgresql]"
+
+Supported connectors:
+
+- mysql
+- postgresql
+- snowflake
+- presto
+- oracle
+- trino
+- clickhouse
+- vertica
+
 
 
 Resources
 ---------
 
 - Source code (git): `<https://github.com/erezsh/reladiff>`_
-- :doc:`python-api`
-- The rest of the `documentation`_
 
-.. _documentation: https://TODO
+- User Documentation
+    - :doc:`supported-databases`
+    - :doc:`how-to-use`
+    - :doc:`python-api`
+    - :doc:`technical-explanation`
+- Contributor Documentation
+   - :doc:`new-database-driver-guide`
