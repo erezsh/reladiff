@@ -1,10 +1,10 @@
-# Contributing to data-diff
+# Contributing to reladiff
 
 Contributions are very welcome! We'll be happy to help you in the process.
 
 ## What should I know before I get started?
 
-Go through the README and the documentation, and make sure that you understand how data-diff works.
+Go through the README and the documentation, and make sure that you understand how reladiff works.
 
 ## How to contribute?
 
@@ -12,29 +12,29 @@ Go through the README and the documentation, and make sure that you understand h
 
 Please report the bug with as many details as you can.
 
-1. Include the exact command that you used. Make sure to run data-diff with the `-d` flag for debug output.
+1. Include the exact command that you used. Make sure to run reladiff with the `-d` flag for debug output.
 2. Provide the entire output of the command. (stdout, logs, exception)
 3. If possible, show us how we could reproduce the bug. i.e. how to set up an environment in which it occurs.
 
 (When pasting, always make sure to redact sensitive information, like passwords.)
 
-If data-diff returns incorrect results, i.e. false-positive or false-negative, please also include the original values.
+If reladiff returns incorrect results, i.e. false-positive or false-negative, please also include the original values.
 
 Before you report a bug, make sure it doesn't already exist.
 
-See [issues](/datafold/data-diff/issues/).
+See [issues](/erezsh/reladiff/issues/).
 
 ### Suggesting Enhancements
 
-We are always interested to hear about how we can make data-diff better!
+We are always interested to hear about how we can make reladiff better!
 
 If you'd like us to support a new database, you should open an issue for it, if there isn't one already. If it already exists, make sure to vote for it with a :thumbsup:, to help us priortize it.
 
 The same goes for other technical requests, like missing features, or gaps in the documentation.
 
-See [issues](/datafold/data-diff/issues/).
+See [issues](/erezsh/reladiff/issues/).
 
-For questions, and non-technical discussions, see [discussions](https://github.com/datafold/data-diff/discussions).
+For questions, and non-technical discussions, see [discussions](https://github.com/erezsh/reladiff/discussions).
 
 ### Contributing code
 
@@ -46,13 +46,13 @@ When in doubt, use the existing code as a guideline, or ask.
 
 #### Get started (setup)
 
-To get started, first clone the repository. For example `git clone https://github.com/datafold/data-diff`.
+To get started, first clone the repository. For example `git clone https://github.com/erezsh/reladiff`.
 
 Once inside, you can install the dependencies.
 
-- Option 1: Run `poetry install` to install them in a virtual env. You can then run data-diff using `poetry run data-diff ...` .
+- Option 1: Run `poetry install` to install them in a virtual env. You can then run reladiff using `poetry run reladiff ...` .
 
-- Option 2: Run `pip install -e .` to install them, and data-diff, in the global context.
+- Option 2: Run `pip install -e .` to install them, and reladiff, in the global context.
 
 At the bare minimum, you need MySQL to run the tests.
 
@@ -74,11 +74,11 @@ When debugging, we recommend using the `-f` flag, to stop on error. Also, use th
 
 #### Implementing a new database.
 
-New databases should be added as a new module in the `data-diff/databases/` folder.
+New databases should be added as a new module in the `reladiff/databases/` folder.
 
 If possible, please also add the database setup to `docker-compose.yml`, so that we can run and test it for ourselves. If you do, also update the CI (`ci.yml`).
 
-Guide to implementing a new database driver: https://data-diff.readthedocs.io/en/latest/new-database-driver-guide.html
+Guide to implementing a new database driver: https://reladiff.readthedocs.io/en/latest/new-database-driver-guide.html
 
 ## Development Setup
 
@@ -135,7 +135,7 @@ $ curl https://datafold-public.s3.us-west-2.amazonaws.com/1m.csv -o dev/ratings.
 Now you can insert it into the testing database(s):
 
 ```shell-session
-# It's optional to seed more than one to run data-diff(1) against.
+# It's optional to seed more than one to run reladiff(1) against.
 $ poetry run preql -f dev/prepare_db.pql mysql://mysql:Password1@127.0.0.1:3306/mysql
 $ poetry run preql -f dev/prepare_db.pql postgresql://postgres:Password1@127.0.0.1:5432/postgres
 # Cloud databases
@@ -144,10 +144,10 @@ $ poetry run preql -f dev/prepare_db.pql mssql://<uri>
 $ poetry run preql -f dev/prepare_db.pql bigquery:///<project>
 ```
 
-**5. Run **data-diff** against seeded database (optional)**
+**5. Run **reladiff** against seeded database (optional)**
 
 ```bash
-poetry run python3 -m data_diff postgresql://postgres:Password1@localhost/postgres rating postgresql://postgres:Password1@localhost/postgres rating_del1 --verbose
+poetry run python3 -m reladiff postgresql://postgres:Password1@localhost/postgres rating postgresql://postgres:Password1@localhost/postgres rating_del1 --verbose
 ```
 
 **6. Run benchmarks (optional)**

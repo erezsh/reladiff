@@ -7,7 +7,7 @@
 
 import pandas as pd
 import plotly.graph_objects as go
-from data_diff.utils import number_to_human
+from reladiff.utils import number_to_human
 import glob
 
 for benchmark_file in glob.glob("benchmark_*.jsonl"):
@@ -33,7 +33,7 @@ for benchmark_file in glob.glob("benchmark_*.jsonl"):
                     textfont=dict(color="blue"),
                 ),
                 go.Bar(
-                    name="data-diff (checksum)",
+                    name="reladiff (checksum)",
                     x=r["name_human"],
                     y=r["checksum_sec"],
                     text=r["checksum_sec"],
@@ -49,7 +49,7 @@ for benchmark_file in glob.glob("benchmark_*.jsonl"):
             ]
         )
         # Change the bar mode
-        fig.update_layout(title=f"data-diff {number_to_human(n_rows)} rows, sha: {sha}")
+        fig.update_layout(title=f"reladiff {number_to_human(n_rows)} rows, sha: {sha}")
         fig.update_traces(texttemplate="%{text:.1f}", textposition="outside")
         fig.update_layout(uniformtext_minsize=2, uniformtext_mode="hide")
         fig.update_yaxes(title="Time")

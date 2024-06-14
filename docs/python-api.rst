@@ -1,7 +1,7 @@
 Python API Reference
 ====================
 
-.. py:module:: data_diff
+.. py:module:: reladiff
 
 .. autofunction:: connect
 
@@ -18,10 +18,10 @@ Python API Reference
 .. autoclass:: TableSegment
     :members: __init__, get_values, choose_checkpoints, segment_by_checkpoints, count, count_and_checksum, is_bounded, new, with_schema
 
-.. autoclass:: data_diff.databases.database_types.AbstractDatabase
+.. autoclass:: reladiff.databases.database_types.AbstractDatabase
     :members:
 
-.. autoclass:: data_diff.databases.database_types.AbstractDialect
+.. autoclass:: reladiff.databases.database_types.AbstractDialect
     :members:
 
 .. autodata:: DbKey

@@ -1,26 +1,25 @@
 [tool.poetry]
-name = "data-diff"
+name = "reladiff"
 version = "0.3.2"
 description = "Command-line tool and Python library to efficiently diff rows across two different databases."
-authors = ["Datafold <data-diff@datafold.com>"]
+authors = ["Erez Shinan <erezshin@gmail.com>"]
 license = "MIT"
 readme = "README.md"
-repository = "https://github.com/datafold/data-diff"
-documentation = "https://sqeleton.readthedocs.io/en/latest/"
+repository = "https://github.com/erezsh/reladiff"
+documentation = "https://reladiff.readthedocs.io/en/latest/"
 classifiers = [
     "Intended Audience :: Developers",
     "Intended Audience :: Information Technology",
     "Intended Audience :: System Administrators",
-    "Programming Language :: Python :: 3.7",
     "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
-    "Development Status :: 2 - Pre-Alpha",
+    "Development Status :: 4 - Beta",
     "Environment :: Console",
     "Topic :: Database :: Database Engines/Servers",
     "Typing :: Typed"
 ]
-packages = [{ include = "data_diff" }]
+packages = [{ include = "reladiff" }]
 
 [tool.poetry.dependencies]
 python = "^3.8"
@@ -75,4 +74,4 @@ requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.poetry.scripts]
-data-diff = 'data_diff.__main__:main'
+reladiff = 'reladiff.__main__:main'

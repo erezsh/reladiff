@@ -1,15 +1,11 @@
-<p align="center">
-    <img alt="Datafold" src="https://user-images.githubusercontent.com/1799931/196497110-d3de1113-a97f-4322-b531-026d859b867a.png" width="50%" />
-</p>
+# **reladiff**
 
-# **data-diff**
-
-## What is `data-diff`?
-data-diff is a **free, open-source tool** that enables data professionals to detect differences in values between any two tables. It's fast, easy to use, and reliable. Even at massive scale.
+## What is `reladiff`?
+reladiff is a **free, open-source tool** that enables data professionals to detect differences in values between any two tables. It's fast, easy to use, and reliable. Even at massive scale.
 
 ## Documentation
 
-[**🗎 Documentation website**](https://docs.datafold.com/os_diff/about) - our detailed documentation has everything you need to start diffing.
+[**🗎 Documentation website**](https://reladiff.readthedocs.io/en/latest/) - our detailed documentation has everything you need to start diffing.
 
 ### Databases we support
 
@@ -27,10 +23,10 @@ data-diff is a **free, open-source tool** that enables data professionals to det
 - DuckDB >=0.6
 - SQLite (coming soon)
 
-For their corresponding connection strings, check out our [detailed table](https://docs.datafold.com/os_diff/databases_we_support).
+For their corresponding connection strings, check out our [detailed table](TODO).
 
 #### Looking for a database not on the list?
-If a database is not on the list, we'd still love to support it. [Please open an issue](https://github.com/datafold/data-diff/issues) to discuss it, or vote on existing requests to push them up our todo list.
+If a database is not on the list, we'd still love to support it. [Please open an issue](https://github.com/erezsh/reladiff/issues) to discuss it, or vote on existing requests to push them up our todo list.
 
 ## Use cases
 
@@ -56,29 +52,29 @@ If a database is not on the list, we'd still love to support it. [Please open an
 
 ### Installation
 
-#### First, install `data-diff` using `pip`.
+#### First, install `reladiff` using `pip`.
 
 ```
-pip install data-diff
+pip install reladiff
 ```
 
 #### Then, install one or more driver(s) specific to the database(s) you want to connect to.
 
-- `pip install 'data-diff[mysql]'`
+- `pip install 'reladiff[mysql]'`
 
-- `pip install 'data-diff[postgresql]'`
+- `pip install 'reladiff[postgresql]'`
 
-- `pip install 'data-diff[snowflake]'`
+- `pip install 'reladiff[snowflake]'`
 
-- `pip install 'data-diff[presto]'`
+- `pip install 'reladiff[presto]'`
 
-- `pip install 'data-diff[oracle]'`
+- `pip install 'reladiff[oracle]'`
 
-- `pip install 'data-diff[trino]'`
+- `pip install 'reladiff[trino]'`
 
-- `pip install 'data-diff[clickhouse]'`
+- `pip install 'reladiff[clickhouse]'`
 
-- `pip install 'data-diff[vertica]'`
+- `pip install 'reladiff[vertica]'`
 
 - For BigQuery, see: https://pypi.org/project/google-cloud-bigquery/
 
@@ -86,19 +82,19 @@ _Some drivers have dependencies that cannot be installed using `pip` and still n
 
 ### Run your first diff
 
-Once you've installed `data-diff`, you can run it from the command line.
+Once you've installed `reladiff`, you can run it from the command line.
 
 ```
-data-diff DB1_URI TABLE1_NAME DB2_URI TABLE2_NAME [OPTIONS]
+reladiff DB1_URI TABLE1_NAME DB2_URI TABLE2_NAME [OPTIONS]
 ```
 
-Be sure to read [the docs](https://docs.datafold.com/os_diff/how_to_use/how_to_use_with_command_line) for detailed instructions how to build one of these commands depending on your database setup.
+Be sure to read [the docs](TODO) for detailed instructions how to build one of these commands depending on your database setup.
 
 #### Code Example: Diff Tables Between Databases
 Here's an example command for your copy/pasting, taken from the screenshot above when we diffed data between Snowflake and Postgres.
 
 ```
-data-diff \
+reladiff \
   postgresql://<username>:'<password>'@localhost:5432/<database> \
   <table> \
   "snowflake://<username>:<password>@<password>/<DATABASE>/<SCHEMA>?warehouse=<WAREHOUSE>&role=<ROLE>" \
@@ -113,7 +109,7 @@ data-diff \
 Here's a code example from [the video](https://www.loom.com/share/682e4b7d74e84eb4824b983311f0a3b2), where we compare data between two Snowflake tables within one database.
 
 ```
-data-diff \
+reladiff \
   "snowflake://<username>:<password>@<password>/<DATABASE>/<SCHEMA_1>?warehouse=<WAREHOUSE>&role=<ROLE>" <TABLE_1> \
   <SCHEMA_2>.<TABLE_2> \
   -k org_id \
@@ -128,35 +124,35 @@ In both code examples, I've used `<>` carrots to represent values that **should 
 
 ### We're here to help!
 
-We know that in some cases, the data-diff command can become long and dense. And maybe you're new to the command line.
+We know that in some cases, the reladiff command can become long and dense. And maybe you're new to the command line.
 
-* We're here to help [on slack](https://locallyoptimistic.slack.com/archives/C03HUNGQV0S) if you have ANY questions as you use `data-diff` in your workflow.
-* You can also post a question in [GitHub Discussions](https://github.com/datafold/data-diff/discussions).
+* We're here to help [on slack](https://locallyoptimistic.slack.com/archives/C03HUNGQV0S) if you have ANY questions as you use `reladiff` in your workflow.
+* You can also post a question in [GitHub Discussions](https://github.com/erezsh/reladiff/discussions).
 
 
 To get a Slack invite - [click here](https://locallyoptimistic.com/community/)
 
 ## How to Use
 
-* [How to use from the shell (or: command-line)](https://docs.datafold.com/os_diff/how_to_use/how_to_use_with_command_line)
-* [How to use from Python](https://docs.datafold.com/os_diff/how_to_use/how_to_use_with_python)
-* [How to use with TOML configuration file](https://docs.datafold.com/os_diff/how_to_use/how_to_use_with_toml)
-* [Usage Analytics & Data Privacy](https://docs.datafold.com/os_diff/usage_analytics_data_privacy)
+* [How to use from the shell (or: command-line)](TODO)
+* [How to use from Python](TODO)
+* [How to use with TOML configuration file](TODO)
+* [Usage Analytics & Data Privacy](TODO)
 
 ## How to Contribute
 * Feel free to open an issue or contribute to the project by working on an existing issue.
-* Please read the [contributing guidelines](https://github.com/datafold/data-diff/blob/master/CONTRIBUTING.md) to get started.
+* Please read the [contributing guidelines](https://github.com/erezsh/reladiff/blob/master/CONTRIBUTING.md) to get started.
 
 Big thanks to everyone who contributed so far:
 
-<a href="https://github.com/datafold/data-diff/graphs/contributors">
-  <img src="https://contributors-img.web.app/image?repo=datafold/data-diff" />
+<a href="https://github.com/erezsh/reladiff/graphs/contributors">
+  <img src="https://contributors-img.web.app/image?repo=erezsh/reladiff" />
 </a>
 
 ## Technical Explanation
 
-Check out this [technical explanation](https://docs.datafold.com/os_diff/technical_explanation) of how data-diff works.
+Check out this [technical explanation](TODO) of how reladiff works.
 
 ## License
 
-This project is licensed under the terms of the [MIT License](https://github.com/datafold/data-diff/blob/master/LICENSE).
+This project is licensed under the terms of the [MIT License](https://github.com/erezsh/reladiff/blob/master/LICENSE).

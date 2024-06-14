@@ -1,9 +1,9 @@
-How to implement a new database driver for data-diff
+How to implement a new database driver for reladiff
 ====================================================
 
-First, read through the `CONTRIBUTING.md <https://github.com/datafold/data-diff/blob/master/CONTRIBUTING.md>`_ document.
+First, read through the `CONTRIBUTING.md <https://github.com/erezsh/reladiff/blob/master/CONTRIBUTING.md>`_ document.
 
-Make sure data-diff is set up for development, and that all the tests pass (try to at least set it up for mysql and postgresql)
+Make sure reladiff is set up for development, and that all the tests pass (try to at least set it up for mysql and postgresql)
 
 Look at the other database drivers for example and inspiration.
 
@@ -20,14 +20,14 @@ These dependencies should be specified in the ``pyproject.toml`` file, in ``[too
     [tool.poetry.extras]
     postgresql = ["psycopg2"]
 
-Then, users can install the dependencies needed for your database driver, with ``pip install 'data-diff[postgresql]``.
+Then, users can install the dependencies needed for your database driver, with ``pip install 'reladiff[postgresql]``.
 
-This way, data-diff can support a wide variety of drivers, without requiring our users to install libraries that they won't use.
+This way, reladiff can support a wide variety of drivers, without requiring our users to install libraries that they won't use.
 
 2. Implement a database module
 ----------------------------
 
-New database modules belong in the ``data_diff/databases`` directory.
+New database modules belong in the ``reladiff/databases`` directory.
 
 The module consists of:
 1. Dialect (Class responsible for normalizing/casting fields. e.g. Numbers/Timestamps)
@@ -89,14 +89,14 @@ If the information returned from ``query_table_schema()`` requires slow or error
 
 Documentation:
 
-- :meth:`data_diff.databases.database_types.AbstractDatabase.select_table_schema`
+- :meth:`reladiff.databases.database_types.AbstractDatabase.select_table_schema`
 
-- :meth:`data_diff.databases.database_types.AbstractDatabase.query_table_schema`
+- :meth:`reladiff.databases.database_types.AbstractDatabase.query_table_schema`
 
 :data:`TYPE_CLASSES`
 ~~~~~~~~~~~~~~~~~~~~~~
 
-Each database class must have a ``TYPE_CLASSES`` dictionary, which maps between the string data-type, as returned by querying the table schema, into the appropriate data-diff type class, i.e. a subclass of ``database_types.ColType``.
+Each database class must have a ``TYPE_CLASSES`` dictionary, which maps between the string data-type, as returned by querying the table schema, into the appropriate reladiff type class, i.e. a subclass of ``database_types.ColType``.
 
 :data:`ROUNDS_ON_PREC_LOSS`
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -125,7 +125,7 @@ If you inherit from ``ThreadedDatabase``, you don't have to implement this metho
 
 Docs:
 
-- :meth:`data_diff.databases.database_types.AbstractDatabase.close`
+- :meth:`reladiff.databases.database_types.AbstractDatabase.close`
 
 :meth:`quote()`, :meth:`to_string()`,
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -134,16 +134,16 @@ These methods are used when creating queries, to quote a value, or cast it to ST
 
 For more information, read their docs:
 
-- :meth:`data_diff.databases.database_types.AbstractDatabase.quote`
+- :meth:`reladiff.databases.database_types.AbstractDatabase.quote`
 
-- :meth:`data_diff.databases.database_types.AbstractDatabase.to_string`
+- :meth:`reladiff.databases.database_types.AbstractDatabase.to_string`
 
 :meth:`normalize_number()`, :meth:`normalize_timestamp()`, :meth:`md5_to_int()`
 
 Because comparing data between 2 databases requires both the data to be in the same format - we have normalization functions.
 
 Databases can have the same data in different formats, e.g. ``DECIMAL`` vs ``FLOAT`` vs ``VARCHAR``, with different precisions.
-DataDiff works by converting the values to ``VARCHAR`` and comparing it.
+Reladiff works by converting the values to ``VARCHAR`` and comparing it.
 Your normalize_number/normalize_timestamp functions should account for differing precisions between columns.
 
 These functions accept an SQL code fragment, and returns a new code fragment representing the appropriate computation.

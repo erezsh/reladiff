@@ -2,8 +2,8 @@ import unittest
 
 from sqeleton.queries import table, commit
 
-from data_diff import TableSegment, HashDiffer
-from data_diff import databases as db
+from reladiff import TableSegment, HashDiffer
+from reladiff import databases as db
 from .common import get_conn, random_table_suffix
 
 

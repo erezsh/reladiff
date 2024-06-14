@@ -9,7 +9,7 @@ if "%SPHINXBUILD%" == "" (
 )
 set SOURCEDIR=.
 set BUILDDIR=_build
-set SPHINXPROJ=data-diff
+set SPHINXPROJ=reladiff
 
 if "%1" == "" goto help
 

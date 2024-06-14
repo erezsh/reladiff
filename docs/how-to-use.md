@@ -6,10 +6,10 @@ Run the following command:
 
 ```bash
     # Same-DB diff, using outer join
-    $ data-diff  DB  TABLE1  TABLE2  [options]
+    $ reladiff  DB  TABLE1  TABLE2  [options]
 
     # Cross-DB diff, using hashes
-    $ data-diff  DB1  TABLE1  DB2  TABLE2  [options]
+    $ reladiff  DB1  TABLE1  DB2  TABLE2  [options]
 ```
 
 Where DB is either a database URL that's compatible with SQLAlchemy, or the name of a database specified in a configuration file.
@@ -42,7 +42,6 @@ it's recommended to surround them with quotes.
   - `-j` or `--threads` - Number of worker threads to use per database. Default=1.
   - `-w`, `--where` - An additional 'where' expression to restrict the search space.
   - `--conf`, `--run` - Specify the run and configuration from a TOML file. (see below)
-  - `--no-tracking` - data-diff sends home anonymous usage data. Use this to disable it.
   - `--bisection-threshold` - Minimal size of segment to be split. Smaller segments will be downloaded and compared locally.
   - `--bisection-factor` - Segments per iteration. When set to 2, it performs binary search.
   - `-m`, `--materialize` - Materialize the diff results into a new table in the database.
@@ -59,7 +58,7 @@ it's recommended to surround them with quotes.
 
 ### How to use with a configuration file
 
-Data-diff lets you load the configuration for a run from a TOML file.
+reladiff lets you load the configuration for a run from a TOML file.
 
 **Reasons to use a configuration file:**
 
@@ -69,7 +68,7 @@ Data-diff lets you load the configuration for a run from a TOML file.
 
 - Gives you fine-grained control over the settings switches, without requiring any Python code.
 
-Use `--conf` to specify that path to the configuration file. data-diff will load the settings from `run.default`, if it's defined.
+Use `--conf` to specify that path to the configuration file. reladiff will load the settings from `run.default`, if it's defined.
 
 Then you can, optionally, use `--run` to choose to load the settings of a specific run, and override the settings `run.default`. (all runs extend `run.default`, like inheritance).
 
@@ -100,16 +99,16 @@ verbose = false
 2.table = "rating_del1"
 ```
 
-In this example, running `data-diff --conf myconfig.toml --run test_diff` will compare between `rating` and `rating_del1`.
+In this example, running `reladiff --conf myconfig.toml --run test_diff` will compare between `rating` and `rating_del1`.
 It will use the `timestamp` column as the update column, as specified in `run.default`. However, it won't be verbose, since that
 flag is overwritten to `false`.
 
-Running it with `data-diff --conf myconfig.toml --run test_diff -v` will set verbose back to `true`.
+Running it with `reladiff --conf myconfig.toml --run test_diff -v` will set verbose back to `true`.
 
 
 ## How to use from Python
 
-Import the `data_diff` module, and use the following functions:
+Import the `reladiff` module, and use the following functions:
 
 - `connect_to_table()` to connect to a specific table in the database
 
@@ -123,7 +122,7 @@ Example:
 import logging
 logging.basicConfig(level=logging.INFO)
 
-from data_diff import connect_to_table, diff_tables
+from reladiff import connect_to_table, diff_tables
 
 table1 = connect_to_table("postgresql:///", "table_name", "id")
 table2 = connect_to_table("mysql:///", "table_name", "id")
@@ -133,27 +132,4 @@ for different_row in diff_tables(table1, table2):
     print(plus_or_minus, columns)
 ```
 
-Run `help(diff_tables)` or [read the docs](https://data-diff.readthedocs.io/en/latest/) to learn about the different options.
-
-## Usage Analytics & Data Privacy
-
-data-diff collects anonymous usage data to help our team improve the tool and to apply development efforts to where our users need them most.
-
-We capture two events: one when the data-diff run starts, and one when it is finished. No user data or potentially sensitive information is or ever will be collected. The captured data is limited to:
-
-- Operating System and Python version
-- Types of databases used (postgresql, mysql, etc.)
-- Sizes of tables diffed, run time, and diff row count (numbers only)
-- Error message, if any, truncated to the first 20 characters.
-- A persistent UUID to identify the session, stored in `~/.datadiff.toml`
-
-If you do not wish to participate, the tracking can be easily disabled with one of the following methods:
-
-* In the CLI, use the `--no-tracking` flag.
-* In the config file, set `no_tracking = true` (for example, under `[run.default]`)
-* If you're using the Python API:
-```python
-import data_diff
-data_diff.disable_tracking()    # Call this first, before making any API calls
-# Connect and diff your tables without any tracking
-```
+Run `help(diff_tables)` or [read the docs](https://reladiff.readthedocs.io/en/latest/) to learn about the different options.

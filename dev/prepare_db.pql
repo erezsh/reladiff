@@ -18,7 +18,7 @@ func create_indices(tbl) {
     tbl.add_index(["id", "timestamp"])
 }
 
-DATASET = "data_diff"   // For BigQuery
+DATASET = "reladiff"   // For BigQuery
 if (db_type == "bigquery") {
     set_active_dataset(DATASET)
 }
@@ -70,8 +70,8 @@ if (db_type == "snowflake" or db_type == "redshift") {
 
         run_sql("""
             COPY "public"."tmp_rating" (userid, movieid, rating, timestamp)
-            FROM 's3://dev-cf-redshift-datafold-data-diff/ml/ratings.csv'
-            IAM_ROLE 'arn:aws:iam::760878568205:role/dev-cf-redshift-data-diff'
+            FROM 's3://dev-cf-redshift-datafold-reladiff/ml/ratings.csv'
+            IAM_ROLE 'arn:aws:iam::760878568205:role/dev-cf-redshift-reladiff'
             DELIMITER ','
             IGNOREHEADER 1;
             """)
@@ -114,8 +114,8 @@ if (db_type == "snowflake" or db_type == "redshift") {
     }
 
     run_sql("""
-        INSERT INTO data_diff.rating(id, userid, movieid, rating, timestamp)
-        SELECT row_number() over (order by userid, movieid, timestamp) AS id, userid, movieid, rating, timestamp FROM data_diff.tmp_rating
+        INSERT INTO reladiff.rating(id, userid, movieid, rating, timestamp)
+        SELECT row_number() over (order by userid, movieid, timestamp) AS id, userid, movieid, rating, timestamp FROM reladiff.tmp_rating
     """)
 
 } else {

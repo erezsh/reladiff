@@ -13,10 +13,10 @@ A clear and concise description of what the bug is.
 Make sure to include the following (minus sensitive information):
 - The command or code you used
 - The run output + error you're getting. (including tracestack)
-- Run data-diff with the `-d` switch for extra debug information.
+- Run reladiff with the `-d` switch for extra debug information.
 
 If possible, please paste these as text, and not a screenshot.
 
 **Describe the environment**
 
-Describe which OS you're using, which data-diff version, and any other information that might be relevant to this bug.
+Describe which OS you're using, which reladiff version, and any other information that might be relevant to this bug.
