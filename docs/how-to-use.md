@@ -42,7 +42,6 @@ it's recommended to surround them with quotes.
   - `-j` or `--threads` - Number of worker threads to use per database. Default=1.
   - `-w`, `--where` - An additional 'where' expression to restrict the search space.
   - `--conf`, `--run` - Specify the run and configuration from a TOML file. (see below)
-  - `--no-tracking` - data-diff sends home anonymous usage data. Use this to disable it.
   - `--bisection-threshold` - Minimal size of segment to be split. Smaller segments will be downloaded and compared locally.
   - `--bisection-factor` - Segments per iteration. When set to 2, it performs binary search.
   - `-m`, `--materialize` - Materialize the diff results into a new table in the database.
@@ -134,26 +133,3 @@ for different_row in diff_tables(table1, table2):
 ```
 
 Run `help(diff_tables)` or [read the docs](https://data-diff.readthedocs.io/en/latest/) to learn about the different options.
-
-## Usage Analytics & Data Privacy
-
-data-diff collects anonymous usage data to help our team improve the tool and to apply development efforts to where our users need them most.
-
-We capture two events: one when the data-diff run starts, and one when it is finished. No user data or potentially sensitive information is or ever will be collected. The captured data is limited to:
-
-- Operating System and Python version
-- Types of databases used (postgresql, mysql, etc.)
-- Sizes of tables diffed, run time, and diff row count (numbers only)
-- Error message, if any, truncated to the first 20 characters.
-- A persistent UUID to identify the session, stored in `~/.datadiff.toml`
-
-If you do not wish to participate, the tracking can be easily disabled with one of the following methods:
-
-* In the CLI, use the `--no-tracking` flag.
-* In the config file, set `no_tracking = true` (for example, under `[run.default]`)
-* If you're using the Python API:
-```python
-import reladiff
-reladiff.disable_tracking()    # Call this first, before making any API calls
-# Connect and diff your tables without any tracking
-```

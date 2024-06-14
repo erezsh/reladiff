@@ -13,12 +13,9 @@ from sqeleton.queries import table
 from sqeleton.databases import Database
 
 from reladiff import databases as db
-from reladiff import tracking
 from reladiff import connect
 from reladiff.table_segment import TableSegment
 from reladiff.query_utils import drop_table
-
-tracking.disable_tracking()
 
 # We write 'or None' because Github sometimes creates empty env vars for secrets
 TEST_MYSQL_CONN_STRING: str = "mysql://mysql:Password1@localhost/mysql"

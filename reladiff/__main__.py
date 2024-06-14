@@ -21,7 +21,6 @@ from .table_segment import TableSegment
 from .databases import connect
 from .parse_time import parse_time_before, UNITS_STR, ParseError
 from .config import apply_config_from_file
-from .tracking import disable_tracking, set_entrypoint_name
 from .version import __version__
 
 
@@ -32,8 +31,6 @@ COLOR_SCHEME = {
     "+": "green",
     "-": "red",
 }
-
-set_entrypoint_name("CLI")
 
 
 def _remove_passwords_in_dict(d: dict):
@@ -148,7 +145,6 @@ click.Context.formatter_class = MyHelpFormatter
 @click.option("-v", "--verbose", is_flag=True, help="Print extra info")
 @click.option("--version", is_flag=True, help="Print version info and exit")
 @click.option("-i", "--interactive", is_flag=True, help="Confirm queries, implies --debug")
-@click.option("--no-tracking", is_flag=True, help="data-diff sends home anonymous usage data. Use this to disable it.")
 @click.option(
     "--case-sensitive",
     is_flag=True,
@@ -236,7 +232,6 @@ def _main(
     verbose,
     version,
     interactive,
-    no_tracking,
     threads,
     case_sensitive,
     json_output,
@@ -253,9 +248,6 @@ def _main(
     if version:
         print(f"v{__version__}")
         return
-
-    if no_tracking:
-        disable_tracking()
 
     if interactive:
         debug = True
