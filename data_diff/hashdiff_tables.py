@@ -5,7 +5,8 @@ from collections import defaultdict
 from typing import Iterator
 from operator import attrgetter
 
-from runtype import dataclass
+from dataclasses import dataclass, field
+# from runtype import dataclass     # TODO fix in runtype
 
 from sqeleton.abcs import ColType_UUID, NumericType, PrecisionType, StringType, Boolean
 
@@ -42,7 +43,7 @@ def diff_sets(a: set, b: set) -> Iterator:
         yield from v
 
 
-@dataclass
+@dataclass(frozen=True)
 class HashDiffer(TableDiffer):
     """Finds the diff between two SQL tables
 
@@ -63,7 +64,7 @@ class HashDiffer(TableDiffer):
     bisection_factor: int = DEFAULT_BISECTION_FACTOR
     bisection_threshold: Number = DEFAULT_BISECTION_THRESHOLD  # Accepts inf for tests
 
-    stats: dict = {}
+    stats: dict = field(default_factory=dict)
 
     def __post_init__(self):
         # Validate options
