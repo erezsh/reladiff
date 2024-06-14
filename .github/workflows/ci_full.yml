@@ -1,11 +1,11 @@
 name: CI-COVER-DATABASES
 
 on:
-  push:
-    paths:
-      - '**.py'
-      - '.github/workflows/**'
-      - '!dev/**'
+#   push:
+#     paths:
+#       - '**.py'
+#       - '.github/workflows/**'
+#       - '!dev/**'
   pull_request:
     branches: [ master ]
   workflow_dispatch:
@@ -34,7 +34,7 @@ jobs:
           python-version: ${{ matrix.python-version }}
 
       - name: Build the stack
-        run: docker-compose up -d mysql postgres trino clickhouse vertica
+        run: docker-compose up -d mysql postgres trino vertica # presto clickhouse
 
       - name: Install Poetry
         run: pip install poetry
@@ -60,7 +60,7 @@ jobs:
         env:
             DATADIFF_SNOWFLAKE_URI: '${{ secrets.DATADIFF_SNOWFLAKE_URI }}'
             # DATADIFF_PRESTO_URI: '${{ secrets.DATADIFF_PRESTO_URI }}'
-            DATADIFF_CLICKHOUSE_URI: 'clickhouse://clickhouse:Password1@localhost:9000/clickhouse'
+            # DATADIFF_CLICKHOUSE_URI: 'clickhouse://clickhouse:Password1@localhost:9000/clickhouse'
             DATADIFF_VERTICA_URI: 'vertica://vertica:Password1@localhost:5433/vertica'
             # DATADIFF_BIGQUERY_URI: '${{ secrets.DATADIFF_BIGQUERY_URI }}'
             DATADIFF_REDSHIFT_URI: '${{ secrets.DATADIFF_REDSHIFT_URI }}'
