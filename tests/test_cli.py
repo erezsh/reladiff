@@ -12,7 +12,7 @@ from .test_diff_tables import test_each_database
 def run_datadiff_cli(*args):
     try:
         stdout = subprocess.check_output(
-            [sys.executable, "-m", "data_diff", "--no-tracking"] + list(args), stderr=subprocess.PIPE
+            [sys.executable, "-m", "reladiff", "--no-tracking"] + list(args), stderr=subprocess.PIPE
         )
     except subprocess.CalledProcessError as e:
         logging.error(e.stderr)

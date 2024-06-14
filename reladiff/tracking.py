@@ -76,7 +76,7 @@ def create_start_event_json(diff_options: Dict[str, Any]):
             "os_version": platform.platform(),
             "python_version": f"{platform.python_version()}/{platform.python_implementation()}",
             "diff_options": diff_options,
-            "data_diff_version:": __version__,
+            "reladiff_version:": __version__,
             "entrypoint_name": entrypoint_name,
         },
     }
@@ -106,7 +106,7 @@ def create_end_event_json(
             "table_2_rows_cnt": table2_count,
             "diff_rows_cnt": diff_count,
             "error_message": error,
-            "data_diff_version:": __version__,
+            "reladiff_version:": __version__,
             "entrypoint_name": entrypoint_name,
         },
     }

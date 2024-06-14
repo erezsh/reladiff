@@ -147,7 +147,7 @@ $ poetry run preql -f dev/prepare_db.pql bigquery:///<project>
 **5. Run **data-diff** against seeded database (optional)**
 
 ```bash
-poetry run python3 -m data_diff postgresql://postgres:Password1@localhost/postgres rating postgresql://postgres:Password1@localhost/postgres rating_del1 --verbose
+poetry run python3 -m reladiff postgresql://postgres:Password1@localhost/postgres rating postgresql://postgres:Password1@localhost/postgres rating_del1 --verbose
 ```
 
 **6. Run benchmarks (optional)**

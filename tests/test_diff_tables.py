@@ -6,10 +6,10 @@ import unittest
 from sqeleton.queries import table, this, commit
 from sqeleton.utils import ArithAlphanumeric, numberToAlphanum
 
-from data_diff.hashdiff_tables import HashDiffer
-from data_diff.joindiff_tables import JoinDiffer
-from data_diff.table_segment import TableSegment, split_space
-from data_diff import databases as db
+from reladiff.hashdiff_tables import HashDiffer
+from reladiff.joindiff_tables import JoinDiffer
+from reladiff.table_segment import TableSegment, split_space
+from reladiff import databases as db
 
 from .common import str_to_checksum, test_each_database_in_list, DiffTestCase, table_segment
 

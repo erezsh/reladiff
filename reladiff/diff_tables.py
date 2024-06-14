@@ -12,7 +12,7 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 
 from runtype import dataclass
 
-from data_diff.info_tree import InfoTree, SegmentInfo
+from .info_tree import InfoTree, SegmentInfo
 
 from .utils import run_as_daemon, safezip, getLogger
 from .thread_utils import ThreadedYielder

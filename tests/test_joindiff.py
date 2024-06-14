@@ -3,9 +3,9 @@ from datetime import datetime
 
 from sqeleton.queries.ast_classes import TablePath
 from sqeleton.queries import table, commit
-from data_diff.table_segment import TableSegment
-from data_diff import databases as db
-from data_diff.joindiff_tables import JoinDiffer
+from reladiff.table_segment import TableSegment
+from reladiff import databases as db
+from reladiff.joindiff_tables import JoinDiffer
 
 from .test_diff_tables import DiffTestCase
 

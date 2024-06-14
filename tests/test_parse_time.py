@@ -2,7 +2,7 @@ import unittest
 
 from datetime import timedelta
 
-from data_diff.parse_time import parse_time_delta
+from reladiff.parse_time import parse_time_delta
 
 
 class TestParseTime(unittest.TestCase):

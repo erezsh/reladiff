@@ -12,11 +12,11 @@ from parameterized import parameterized_class
 from sqeleton.queries import table
 from sqeleton.databases import Database
 
-from data_diff import databases as db
-from data_diff import tracking
-from data_diff import connect
-from data_diff.table_segment import TableSegment
-from data_diff.query_utils import drop_table
+from reladiff import databases as db
+from reladiff import tracking
+from reladiff import connect
+from reladiff.table_segment import TableSegment
+from reladiff.query_utils import drop_table
 
 tracking.disable_tracking()
 

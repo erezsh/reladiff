@@ -17,11 +17,11 @@ from sqeleton.utils import number_to_human
 from sqeleton.queries import table, commit, this, Code
 from sqeleton.queries.api import insert_rows_in_batches
 
-from data_diff import databases as db
-from data_diff.query_utils import drop_table
-from data_diff.utils import accumulate
-from data_diff.hashdiff_tables import HashDiffer, DEFAULT_BISECTION_THRESHOLD
-from data_diff.table_segment import TableSegment
+from reladiff import databases as db
+from reladiff.query_utils import drop_table
+from reladiff.utils import accumulate
+from reladiff.hashdiff_tables import HashDiffer, DEFAULT_BISECTION_THRESHOLD
+from reladiff.table_segment import TableSegment
 from .common import (
     CONN_STRINGS,
     N_SAMPLES,

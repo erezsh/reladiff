@@ -109,7 +109,7 @@ Running it with `data-diff --conf myconfig.toml --run test_diff -v` will set ver
 
 ## How to use from Python
 
-Import the `data_diff` module, and use the following functions:
+Import the `reladiff` module, and use the following functions:
 
 - `connect_to_table()` to connect to a specific table in the database
 
@@ -123,7 +123,7 @@ Example:
 import logging
 logging.basicConfig(level=logging.INFO)
 
-from data_diff import connect_to_table, diff_tables
+from reladiff import connect_to_table, diff_tables
 
 table1 = connect_to_table("postgresql:///", "table_name", "id")
 table2 = connect_to_table("mysql:///", "table_name", "id")
@@ -153,7 +153,7 @@ If you do not wish to participate, the tracking can be easily disabled with one 
 * In the config file, set `no_tracking = true` (for example, under `[run.default]`)
 * If you're using the Python API:
 ```python
-import data_diff
-data_diff.disable_tracking()    # Call this first, before making any API calls
+import reladiff
+reladiff.disable_tracking()    # Call this first, before making any API calls
 # Connect and diff your tables without any tracking
 ```

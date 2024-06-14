@@ -1,8 +1,8 @@
 import os
 import unittest
 
-from data_diff.config import apply_config_from_string, ConfigParseError
-from data_diff.utils import remove_password_from_url
+from reladiff.config import apply_config_from_string, ConfigParseError
+from reladiff.utils import remove_password_from_url
 
 
 class TestConfig(unittest.TestCase):

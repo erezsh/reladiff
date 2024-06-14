@@ -27,7 +27,7 @@ This way, data-diff can support a wide variety of drivers, without requiring our
 2. Implement a database module
 ----------------------------
 
-New database modules belong in the ``data_diff/databases`` directory.
+New database modules belong in the ``reladiff/databases`` directory.
 
 The module consists of:
 1. Dialect (Class responsible for normalizing/casting fields. e.g. Numbers/Timestamps)
@@ -89,9 +89,9 @@ If the information returned from ``query_table_schema()`` requires slow or error
 
 Documentation:
 
-- :meth:`data_diff.databases.database_types.AbstractDatabase.select_table_schema`
+- :meth:`reladiff.databases.database_types.AbstractDatabase.select_table_schema`
 
-- :meth:`data_diff.databases.database_types.AbstractDatabase.query_table_schema`
+- :meth:`reladiff.databases.database_types.AbstractDatabase.query_table_schema`
 
 :data:`TYPE_CLASSES`
 ~~~~~~~~~~~~~~~~~~~~~~
@@ -125,7 +125,7 @@ If you inherit from ``ThreadedDatabase``, you don't have to implement this metho
 
 Docs:
 
-- :meth:`data_diff.databases.database_types.AbstractDatabase.close`
+- :meth:`reladiff.databases.database_types.AbstractDatabase.close`
 
 :meth:`quote()`, :meth:`to_string()`,
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -134,9 +134,9 @@ These methods are used when creating queries, to quote a value, or cast it to ST
 
 For more information, read their docs:
 
-- :meth:`data_diff.databases.database_types.AbstractDatabase.quote`
+- :meth:`reladiff.databases.database_types.AbstractDatabase.quote`
 
-- :meth:`data_diff.databases.database_types.AbstractDatabase.to_string`
+- :meth:`reladiff.databases.database_types.AbstractDatabase.to_string`
 
 :meth:`normalize_number()`, :meth:`normalize_timestamp()`, :meth:`md5_to_int()`
 

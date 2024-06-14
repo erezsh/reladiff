@@ -8,4 +8,4 @@ WORKDIR /app
 # For now while we are in heavy development we install the latest with Poetry
 # and execute directly with Poetry. Later, we'll move to the released Pip package.
 RUN poetry install
-ENTRYPOINT ["poetry", "run", "python3", "-m", "data_diff"]
+ENTRYPOINT ["poetry", "run", "python3", "-m", "reladiff"]
