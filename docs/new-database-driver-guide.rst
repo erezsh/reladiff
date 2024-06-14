@@ -1,7 +1,7 @@
 How to implement a new database driver for data-diff
 ====================================================
 
-First, read through the `CONTRIBUTING.md <https://github.com/datafold/data-diff/blob/master/CONTRIBUTING.md>`_ document.
+First, read through the `CONTRIBUTING.md <https://github.com/erezsh/reladiff/blob/master/CONTRIBUTING.md>`_ document.
 
 Make sure data-diff is set up for development, and that all the tests pass (try to at least set it up for mysql and postgresql)
 

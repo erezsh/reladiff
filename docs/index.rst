@@ -21,15 +21,15 @@ rows across two different databases.
 
 ♾️  Works for tables with 10s of billions of rows
 
-For more information, `See our README <https://github.com/datafold/data-diff#readme>`_
+For more information, `See our README <https://github.com/erezsh/reladiff#readme>`_
 
 
 
 Resources
 ---------
 
-- Source code (git): `<https://github.com/datafold/data-diff>`_
+- Source code (git): `<https://github.com/erezsh/reladiff>`_
 - :doc:`python-api`
 - The rest of the `documentation`_
 
-.. _documentation: https://docs.datafold.com/os_diff/about/
+.. _documentation: https://TODO

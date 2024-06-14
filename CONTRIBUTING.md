@@ -22,7 +22,7 @@ If data-diff returns incorrect results, i.e. false-positive or false-negative, p
 
 Before you report a bug, make sure it doesn't already exist.
 
-See [issues](/datafold/data-diff/issues/).
+See [issues](/erezsh/reladiff/issues/).
 
 ### Suggesting Enhancements
 
@@ -32,9 +32,9 @@ If you'd like us to support a new database, you should open an issue for it, if 
 
 The same goes for other technical requests, like missing features, or gaps in the documentation.
 
-See [issues](/datafold/data-diff/issues/).
+See [issues](/erezsh/reladiff/issues/).
 
-For questions, and non-technical discussions, see [discussions](https://github.com/datafold/data-diff/discussions).
+For questions, and non-technical discussions, see [discussions](https://github.com/erezsh/reladiff/discussions).
 
 ### Contributing code
 
@@ -46,7 +46,7 @@ When in doubt, use the existing code as a guideline, or ask.
 
 #### Get started (setup)
 
-To get started, first clone the repository. For example `git clone https://github.com/datafold/data-diff`.
+To get started, first clone the repository. For example `git clone https://github.com/erezsh/reladiff`.
 
 Once inside, you can install the dependencies.
 

@@ -60,7 +60,7 @@ master_doc = "index"
 
 # General information about the project.
 project = "data-diff"
-copyright = "Datafold"
+copyright = "Erez Shinan"
 author = "Erez Shinan"
 
 # The version info for the project you're documenting, acts as replacement for

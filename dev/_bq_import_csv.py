@@ -2,7 +2,7 @@ from google.cloud import bigquery
 
 client = bigquery.Client()
 
-table_id = "datafold-dev-2.reladiff.tmp_rating"
+table_id = "reladiff-dev-2.reladiff.tmp_rating"
 dataset_name = 'reladiff'
 
 client.create_dataset(dataset_name, exists_ok=True)
@@ -24,5 +24,3 @@ print(
 )
 
 
-# run_sql("ALTER TABLE `datafold-dev-2.reladiff.Rating` ADD COLUMN id BYTES")
-# run_sql("UPDATE `datafold-dev-2.reladiff.Rating` SET id = cast(GENERATE_UUID() as bytes) WHERE True")
