@@ -14,6 +14,8 @@ classifiers = [
     "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
     "Development Status :: 4 - Beta",
     "Environment :: Console",
     "Topic :: Database :: Database Engines/Servers",
@@ -67,6 +69,8 @@ trino = ["trino"]
 clickhouse = ["clickhouse-driver"]
 vertica = ["vertica-python"]
 duckdb = ["duckdb"]
+
+all = ["mysql-connector-python", "psycopg2", "snowflake-connector-python", "cryptography", "presto-python-client", "cx_Oracle", "trino", "clickhouse-driver", "vertica-python", "duckdb"]
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

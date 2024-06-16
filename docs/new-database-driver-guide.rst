@@ -1,6 +1,8 @@
 How to implement a new database driver for reladiff
 ====================================================
 
+**This guide is out-of-date!** New databases should be added first in `Sqeleton <https://github.com/erezsh/sqeleton>`_.
+
 First, read through the `CONTRIBUTING.md <https://github.com/erezsh/reladiff/blob/master/CONTRIBUTING.md>`_ document.
 
 Make sure reladiff is set up for development, and that all the tests pass (try to at least set it up for mysql and postgresql)
@@ -25,7 +27,7 @@ Then, users can install the dependencies needed for your database driver, with `
 This way, reladiff can support a wide variety of drivers, without requiring our users to install libraries that they won't use.
 
 2. Implement a database module
-----------------------------
+------------------------------
 
 New database modules belong in the ``reladiff/databases`` directory.
 

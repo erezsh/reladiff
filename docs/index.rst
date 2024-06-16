@@ -3,70 +3,62 @@
    :caption: Reference
    :hidden:
 
-   supported-databases
+   install
    how-to-use
+   supported-databases
    python-api
    technical-explanation
    new-database-driver-guide
 
-Introduction
+Reladiff
 ------------
 
-**reladiff** is a command-line tool and Python library to efficiently diff
-rows across two different databases.
+**Reladiff** is a high-performance tool and library designed for diffing large datasets across databases. By executing the diff calculation within the database itself, Reladiff minimizes data transfer and achieves optimal performance.
 
-⇄  Verifies across many different databases (e.g. *PostgreSQL* -> *Snowflake*) !
+This tool is specifically tailored for data professionals, DevOps engineers, and system administrators.
 
-🔍 Outputs diff of rows in detail
+Reladiff is free, open-source, user-friendly, extensively tested, and delivers fast results, even at massive scale.
 
-🚨 Simple CLI/API to create monitoring and alerts
+Key Features
+============
 
-🔥 Verify 25M+ rows in <10s, and 1B+ rows in ~5min.
+1. **Cross-Database Diff**: *Reladiff* employs a divide-and-conquer algorithm, based on matching hashes, to efficiently identify modified segments and download only the necessary data for comparison. This approach ensures exceptional performance when differences are minimal.
 
-♾️  Works for tables with 10s of billions of rows
+   - ⇄ Diffs across over a dozen different databases (e.g. *PostgreSQL* -> *Snowflake*)!
 
-For more information, `See our README <https://github.com/erezsh/reladiff#readme>`_
+   - 🧠 Gracefully handles reduced precision (e.g., timestamp(9) -> timestamp(3)) by rounding according to the database specification.
 
-How to install
---------------
+   - 🔥 Benchmarked to diff over 25M rows in under 10 seconds and over 1B rows in approximately 5 minutes, given no differences.
 
-Requires Python 3.7+ with pip.
+   - ♾️ Capable of handling tables with tens of billions of rows.
 
-::
+2. **Intra-Database Diff**: When both tables reside in the same database, Reladiff compares them using a join operation, with additional optimizations for enhanced speed.
 
-    pip install reladiff
+   - Supports materializing the diff into a local table.
+   - Can collect various extra statistics about the tables.
 
-For installing with 3rd-party database connectors, use the following syntax:
+3. **Threaded**: Utilizes multiple threads to significantly boost performance during diffing operations.
 
-::
+4. **Configurable**: Offers numerous options for power-users to customize and optimize their usage.
 
-    pip install "reladiff[db1,db2]"
+5. **Automation-Friendly**: Outputs both JSON and git-like diffs (with + and -), facilitating easy integration into CI/CD pipelines.
 
-    e.g.
-    pip install "reladiff[mysql,postgresql]"
+6. **Over a dozen databases supported**: MySQL, Postgres, Snowflake, Bigquery, Oracle, Clickhouse, and more. `See full list <https://reladiff.readthedocs.io/en/latest/supported-databases.html>`_.
 
-Supported connectors:
-
-- mysql
-- postgresql
-- snowflake
-- presto
-- oracle
-- trino
-- clickhouse
-- vertica
-
-
+Reladiff is a fork of data-diff.
 
 Resources
 ---------
 
-- Source code (git): `<https://github.com/erezsh/reladiff>`_
 
 - User Documentation
-    - :doc:`supported-databases`
+    - :doc:`install`
     - :doc:`how-to-use`
+    - :doc:`supported-databases`
     - :doc:`python-api`
     - :doc:`technical-explanation`
 - Contributor Documentation
    - :doc:`new-database-driver-guide`
+
+- Other links
+    - Github: `<https://github.com/erezsh/reladiff>`_

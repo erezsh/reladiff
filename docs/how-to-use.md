@@ -1,18 +1,24 @@
 # How to use
 
-## How to use from the shell (or: command-line)
+Once you've installed Reladiff, you can run it from the command-line, or from Python.
+
+## How to use from the shell / command-line
 
 Run the following command:
 
 ```bash
-    # Same-DB diff, using outer join
-    $ reladiff  DB  TABLE1  TABLE2  [options]
-
-    # Cross-DB diff, using hashes
-    $ reladiff  DB1  TABLE1  DB2  TABLE2  [options]
+# Cross-DB diff, using hashes
+reladiff  DB1_URI  TABLE1_NAME  DB2_URI  TABLE2_NAME  [OPTIONS]
 ```
 
-Where DB is either a database URL that's compatible with SQLAlchemy, or the name of a database specified in a configuration file.
+When both tables belong to the same database, a shorter syntax is availble:
+
+```bash
+# Same-DB diff, using outer join
+reladiff  DB1_URI  TABLE1_NAME  TABLE2_NAME  [OPTIONS]
+```
+
+Where DB_URL is either a database URL that's compatible with SQLAlchemy, or the name of a database specified in a configuration file.
 
 We recommend using a configuration file, with the ``--conf`` switch, to keep the command simple and manageable.
 
@@ -58,7 +64,7 @@ it's recommended to surround them with quotes.
 
 ### How to use with a configuration file
 
-reladiff lets you load the configuration for a run from a TOML file.
+Reladiff lets you load the configuration for a run from a TOML file.
 
 **Reasons to use a configuration file:**
 
@@ -127,9 +133,10 @@ from reladiff import connect_to_table, diff_tables
 table1 = connect_to_table("postgresql:///", "table_name", "id")
 table2 = connect_to_table("mysql:///", "table_name", "id")
 
-for different_row in diff_tables(table1, table2):
-    plus_or_minus, columns = different_row
-    print(plus_or_minus, columns)
+sign: Literal['+' | '-']
+row: tuple[str, ...]
+for sign, row in diff_tables(table1, table2):
+    print(sign, row)
 ```
 
-Run `help(diff_tables)` or [read the docs](https://reladiff.readthedocs.io/en/latest/) to learn about the different options.
+To learn more about the different options, [read here](file:///C:/code/reladiff/docs/_build/html/python-api.html#reladiff.diff_tables) or run `help(diff_tables)`.

@@ -353,6 +353,8 @@ DATABASE_TYPES = {
 class PaginatedTable:
     # We can't query all the rows at once for large tables. It'll occupy too
     # much memory.
+    # TODO implement this in sqeleton
+
     RECORDS_PER_BATCH = 1000000
 
     def __init__(self, table_path, conn):
@@ -487,8 +489,9 @@ def _get_test_db_pairs():
         for db_cls in DATABASE_TYPES:
             yield db_cls, db.PostgreSQL
             yield db.PostgreSQL, db_cls
-            yield db_cls, db.Snowflake
-            yield db.Snowflake, db_cls
+            # XXX temporarily removed *<->Snowflake testing due to high costs
+            # yield db_cls, db.Snowflake
+            # yield db.Snowflake, db_cls
     else:
         yield db.PostgreSQL, db.PostgreSQL
 
