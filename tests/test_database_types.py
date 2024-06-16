@@ -487,8 +487,9 @@ def _get_test_db_pairs():
         for db_cls in DATABASE_TYPES:
             yield db_cls, db.PostgreSQL
             yield db.PostgreSQL, db_cls
-            yield db_cls, db.Snowflake
-            yield db.Snowflake, db_cls
+            # XXX temporarily removed *<->Snowflake testing due to high costs
+            # yield db_cls, db.Snowflake
+            # yield db.Snowflake, db_cls
     else:
         yield db.PostgreSQL, db.PostgreSQL
 
