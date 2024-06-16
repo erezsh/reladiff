@@ -3,8 +3,9 @@
    :caption: Reference
    :hidden:
 
-   supported-databases
+   install
    how-to-use
+   supported-databases
    python-api
    technical-explanation
    new-database-driver-guide
@@ -30,7 +31,7 @@ For more information, `See our README <https://github.com/erezsh/reladiff#readme
 How to install
 --------------
 
-Requires Python 3.7+ with pip.
+Requires Python 3.8+ with pip.
 
 ::
 
