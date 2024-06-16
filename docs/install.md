@@ -1,45 +1,69 @@
 # How to install
 
+## Install library and CLI (no drivers)
+
 Reladiff is available on [PyPI](https://pypi.org/project/reladiff/). You may install it by running:
 
-```
+```sh
 pip install reladiff
 ```
 
 (Note: Make sure `pip` is installed first)
 
-We advise to install `reladiff` within a virtual-env, because the drivers for  it may bring many dependencies.
+## Install with database drivers
 
-Reladiff is available through Python's package manager:
+You may install the necessary database drivers, at the same time as when installing Reladiff, using pip's "extra" syntax.
 
+We advise to install Reladiff within a virtual-env, because the drivers may bring many dependencies.
+
+```sh
+# Install all database drivers
+pip install reladiff[all]
+
+# The above line is equivalent to:
+pip install reladiff[duckdb,mysql,postgresql,snowflake,presto,oracle,trino,clickhouse,vertica]
 ```
-pip install reladiff
+
+You may remove all the databases you don't plan to use.
+
+For example, if you only want to diff between Postgresql and DuckDB, install Reladiff thusly:
+
+```sh
+pip install reladiff[duckdb,postgresql]
 ```
 
+### Notes for shell / command-line
 
-#### Then, install one or more driver(s) specific to the database(s) you want to connect to.
+In some shells, like `bash` and `powershell`, you will have to use quotes, in order to allow the `[]` syntax.
 
-- `pip install 'reladiff[mysql]'`
+For example:
 
-- `pip install 'reladiff[postgresql]'`
+```sh
+pip install 'reladiff[all]'     # will work on bash
+pip install "reladiff[all]"     # will work on powershell (Windows)
+```
 
-- `pip install 'reladiff[snowflake]'`
+Consult your shell environment to learn the correct way to quote or escape your command.
 
-- `pip install 'reladiff[presto]'`
+### Notes for BigQuery
 
-- `pip install 'reladiff[oracle]'`
+Reladiff currently doesn't auto-install the BigQuery drivers.
 
-- `pip install 'reladiff[trino]'`
-
-- `pip install 'reladiff[clickhouse]'`
-
-- `pip install 'reladiff[vertica]'`
-
-- For BigQuery, see: https://pypi.org/project/google-cloud-bigquery/
-
-_Some drivers have dependencies that cannot be installed using `pip` and still need to be installed manually._
+For BigQuery, see: [https://pypi.org/project/google-cloud-bigquery](https://pypi.org/project/google-cloud-bigquery)
 
 
-We advise to install it within a virtual-env.
+### Another way to install all the drivers
 
-$$$$ SAY ABOUT IT, poetry etc.  $$$$
+For your convenience, you may also run these commands one after the other. You may omit drivers that you don't plan to use.
+
+```bash
+pip install reladiff[duckdb]
+pip install reladiff[mysql]
+pip install reladiff[postgresql]
+pip install reladiff[snowflake]
+pip install reladiff[presto]
+pip install reladiff[oracle]
+pip install reladiff[trino]
+pip install reladiff[clickhouse]
+pip install reladiff[vertica]
+```

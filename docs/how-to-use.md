@@ -1,6 +1,8 @@
 # How to use
 
-## How to use from the shell (or: command-line)
+Once installed, reladiff may be run from the command-line, or from Python.
+
+## How to use from the shell / command-line
 
 Run the following command:
 
@@ -127,9 +129,10 @@ from reladiff import connect_to_table, diff_tables
 table1 = connect_to_table("postgresql:///", "table_name", "id")
 table2 = connect_to_table("mysql:///", "table_name", "id")
 
-for different_row in diff_tables(table1, table2):
-    plus_or_minus, columns = different_row
-    print(plus_or_minus, columns)
+sign: Literal['+' | '-']
+row: tuple[str, ...]
+for sign, row in diff_tables(table1, table2):
+    print(sign, row)
 ```
 
-Run `help(diff_tables)` or [read the docs](https://reladiff.readthedocs.io/en/latest/) to learn about the different options.
+To learn more about the different options, [read here](file:///C:/code/reladiff/docs/_build/html/python-api.html#reladiff.diff_tables) or run `help(diff_tables)`.

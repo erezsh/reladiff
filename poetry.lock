@@ -1109,6 +1109,7 @@ python-dateutil = ">=1.5"
 six = ">=1.10.0"
 
 [extras]
+all = ["clickhouse-driver", "cryptography", "duckdb", "mysql-connector-python", "presto-python-client", "psycopg2", "snowflake-connector-python", "trino"]
 clickhouse = ["clickhouse-driver"]
 duckdb = ["duckdb"]
 mysql = ["mysql-connector-python"]
@@ -1123,4 +1124,4 @@ vertica = []
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.8"
-content-hash = "2ff1802b6af91790ea770b57cb67615ef6a0e06b69d0198be25829c8598ff85d"
+content-hash = "deff19966dbe1fb03367e749466bfdf16e0181408bb5a6c036a116ba81cc6a7c"

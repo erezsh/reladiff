@@ -70,6 +70,8 @@ clickhouse = ["clickhouse-driver"]
 vertica = ["vertica-python"]
 duckdb = ["duckdb"]
 
+all = ["mysql-connector-python", "psycopg2", "snowflake-connector-python", "cryptography", "presto-python-client", "cx_Oracle", "trino", "clickhouse-driver", "vertica-python", "duckdb"]
+
 [build-system]
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
