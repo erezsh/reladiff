@@ -1,20 +1,24 @@
 # How to use
 
-Once installed, reladiff may be run from the command-line, or from Python.
+Once you've installed Reladiff, you can run it from the command-line, or from Python.
 
 ## How to use from the shell / command-line
 
 Run the following command:
 
 ```bash
-    # Same-DB diff, using outer join
-    $ reladiff  DB  TABLE1  TABLE2  [options]
-
-    # Cross-DB diff, using hashes
-    $ reladiff  DB1  TABLE1  DB2  TABLE2  [options]
+# Cross-DB diff, using hashes
+reladiff  DB1_URI  TABLE1_NAME  DB2_URI  TABLE2_NAME  [OPTIONS]
 ```
 
-Where DB is either a database URL that's compatible with SQLAlchemy, or the name of a database specified in a configuration file.
+When both tables belong to the same database, a shorter syntax is availble:
+
+```bash
+# Same-DB diff, using outer join
+reladiff  DB1_URI  TABLE1_NAME  TABLE2_NAME  [OPTIONS]
+```
+
+Where DB_URL is either a database URL that's compatible with SQLAlchemy, or the name of a database specified in a configuration file.
 
 We recommend using a configuration file, with the ``--conf`` switch, to keep the command simple and manageable.
 
@@ -60,7 +64,7 @@ it's recommended to surround them with quotes.
 
 ### How to use with a configuration file
 
-reladiff lets you load the configuration for a run from a TOML file.
+Reladiff lets you load the configuration for a run from a TOML file.
 
 **Reasons to use a configuration file:**
 

@@ -8,7 +8,7 @@ Reladiff is available on [PyPI](https://pypi.org/project/reladiff/). You may ins
 pip install reladiff
 ```
 
-(Note: Make sure `pip` is installed first)
+Requires Python 3.8+ with pip.
 
 ## Install with database drivers
 
@@ -24,7 +24,7 @@ pip install reladiff[all]
 pip install reladiff[duckdb,mysql,postgresql,snowflake,presto,oracle,trino,clickhouse,vertica]
 ```
 
-You may remove all the databases you don't plan to use.
+You may remove any database you don't plan to use.
 
 For example, if you only want to diff between Postgresql and DuckDB, install Reladiff thusly:
 

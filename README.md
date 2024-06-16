@@ -1,30 +1,48 @@
-**Reladiff** is a tool for comparing data across databases. It uses clever algorithms to push the diff computation to the databases themselves, making it super-fast. It is mainly aimed at data professionals, devops and sysadmins.
+&nbsp;
+<br/>
+<br/>
+<span style="font-size:1.3em">**Reladiff**</span> is a high-performance tool and library designed for diffing large datasets across databases. By executing the diff calculation within the database itself, Reladiff minimizes data transfer and achieves optimal performance.
 
-It is both a command-line tool, and a Python library.
+This tool is specifically tailored for data professionals, DevOps engineers, and system administrators.
 
-It's free, open-source, simple to use, well-tested, and fast, even at massive scale.
+Reladiff is free, open-source, user-friendly, extensively tested, and delivers fast results, even at massive scale.
 
-Here are its main features:
+### Key Features:
 
- 1. Fast Cross-Database Comparison: Compare data across different types of databases (e.g., MySQL to Snowflake). Reladiff uses a divide-and-conquer algorithm, based on comparing hashes, to optimally identify the modified segments, and only download the necessary data for comparison. It deals elegantly with reduced precision (e.g. timestamp(9) -> timestamp(3)), by rounding according to the spec of the database.
+ 1. **Cross-Database Diff**: *Reladiff* Reladiff employs a divide-and-conquer algorithm, based on matching hashes, to efficiently identify modified segments and download only the necessary data for comparison. This approach ensures exceptional performance when differences are minimal.
 
-2. Fast Intra-Database Comparison: When both tables are in the same database, they will be compared using a join, with a few extra tricks to make it extra quick. It supports materializing the diff into a local table. It can also collect various extra statistics about the tables.
+    - ⇄  Diffs across over a dozen different databases (e.g. *PostgreSQL* -> *Snowflake*) !
 
-3. Threaded - Diffing using several threads gives a huge performance boost.
+    - 🧠 Gracefully handles reduced precision (e.g., timestamp(9) -> timestamp(3)) by rounding according to the database specification.
 
-3. Configurable: Many switches for power-users to tinker with.
+    - 🔥 Benchmarked to diff over 25M rows in under 10 seconds and over 1B rows in approximately 5 minutes, given no differences.
 
-4. Automation-Friendly: Can output both JSON and a git-like diff. Easy to integrate into CI/CD pipelines.
+    - ♾️ Capable of handling tables with tens of billions of rows.
 
-5. Many databases supported: PostgreSQL, MySQL, Snowflake, BigQuery, Redshift, Oracle, Presto, Databricks, Trino, Clickhouse, Vertica, DuckDB
 
-6. Works for tables with 10s of billions of rows
+2. **Intra-Database Diff**: When both tables reside in the same database, Reladiff compares them using a join operation, with additional optimizations for enhanced speed.
+
+    - Supports materializing the diff into a local table.
+    - Can collect various extra statistics about the tables.
+
+3. **Threaded**: Utilizes multiple threads to significantly boost performance during diffing operations.
+
+3. **Configurable**: Offers numerous options for power-users to customize and optimize their usage.
+
+4. **Automation-Friendly**: Outputs both JSON and git-like diffs (with + and -), facilitating easy integration into CI/CD pipelines.
+
+5. **Over a dozen databases supported**. MySQL, Postgres, Snowflake, Bigquery, Oracle, Clickhouse, and more. [See full list](https://reladiff.readthedocs.io/en/latest/supported-databases.html)
+
+
+Reladiff is a fork of data-diff.
 
 ## Get Started
 
 [**🗎 Read the Documentation**](https://reladiff.readthedocs.io/en/latest/) - our detailed documentation has everything you need to start diffing.
 
-## For the impatient
+## Quickstart
+
+For the impatient ;)
 
 ### Install
 
@@ -34,25 +52,28 @@ Reladiff is available on [PyPI](https://pypi.org/project/reladiff/). You may ins
 pip install reladiff
 ```
 
+Requires Python 3.8+ with pip.
+
 We advise to install it within a virtual-env.
 
 ### How to Use
 
-Once you've installed `reladiff`, you can run it from the command-line:
+Once you've installed Reladiff, you can run it from the command-line:
 
-```
-reladiff DB1_URI TABLE1_NAME DB2_URI TABLE2_NAME [OPTIONS]
+```bash
+# Cross-DB diff, using hashes
+reladiff  DB1_URI  TABLE1_NAME  DB2_URI  TABLE2_NAME  [OPTIONS]
 ```
 
 When both tables belong to the same database, a shorter syntax is availble:
 
-```
-reladiff DB1_URI TABLE1_NAME TABLE2_NAME [OPTIONS]
+```bash
+# Same-DB diff, using outer join
+reladiff  DB1_URI  TABLE1_NAME  TABLE2_NAME  [OPTIONS]
 ```
 
-Diffing within the same database is also faster, as it uses a join-based algorithm.
+Or, you can import and run it from Python:
 
-Or, you can run it from Python:
 ```python
 from reladiff import connect_to_table, diff_tables
 
@@ -67,9 +88,9 @@ for sign, row in diff_tables(table1, table2):
 
 Read our detailed instructions:
 
-* [How to use from the shell (or: command-line)](https://reladiff.readthedocs.io/en/latest/how-to-use.html#how-to-use-from-the-shell-or-command-line)
+* [How to use from the shell / command-line](https://reladiff.readthedocs.io/en/latest/how-to-use.html#how-to-use-from-the-shell-or-command-line)
+    * [How to use with TOML configuration file](https://reladiff.readthedocs.io/en/latest/how-to-use.html#how-to-use-with-a-configuration-file)
 * [How to use from Python](https://reladiff.readthedocs.io/en/latest/how-to-use.html#how-to-use-from-python)
-* [How to use with TOML configuration file](https://reladiff.readthedocs.io/en/latest/how-to-use.html#how-to-use-with-a-configuration-file)
 
 
 #### "Real-world" example: Diff "events" table between Postgres and Snowflake
