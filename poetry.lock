@@ -950,13 +950,13 @@ files = [
 
 [[package]]
 name = "sqeleton"
-version = "0.1.1"
+version = "0.1.2"
 description = "Python library for querying SQL databases"
 optional = false
 python-versions = "<4.0,>=3.8"
 files = [
-    {file = "sqeleton-0.1.1-py3-none-any.whl", hash = "sha256:df262b89d2e8ec21ffbd57d3377197e5e238b1b6aac66cf7807245e3ff332c0a"},
-    {file = "sqeleton-0.1.1.tar.gz", hash = "sha256:ae67275c1c886ac603495aee1317b27f973154acbc7d50f75a5c64ae82f815fa"},
+    {file = "sqeleton-0.1.2-py3-none-any.whl", hash = "sha256:cc55482bb8fa0996c2bfcadc7e81d825ed314f2981344aaf6ff9dddd8c6549c8"},
+    {file = "sqeleton-0.1.2.tar.gz", hash = "sha256:efa35bbbaaa5fa784dd81d41af2116dd60cbd292e81f625bc885854c5bc835ac"},
 ]
 
 [package.dependencies]
@@ -1124,4 +1124,4 @@ vertica = []
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.8"
-content-hash = "deff19966dbe1fb03367e749466bfdf16e0181408bb5a6c036a116ba81cc6a7c"
+content-hash = "2a84e0f3639af519ae3620528d4e194bd356f435a0fcdff7ddf3d546ad034f1b"
