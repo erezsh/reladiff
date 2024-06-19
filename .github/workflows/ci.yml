@@ -64,7 +64,7 @@ jobs:
 
       - name: Run unit tests
         env:
-            SNOWFLAKE_URI: '${{ secrets.SNOWFLAKE_URI }}'
+            # SNOWFLAKE_URI: '${{ secrets.SNOWFLAKE_URI }}'
             # PRESTO_URI: '${{ secrets.PRESTO_URI }}'
             TRINO_URI: '${{ secrets.TRINO_URI }}'
             # BIGQUERY_URI: '${{ secrets.BIGQUERY_URI }}'
