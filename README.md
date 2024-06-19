@@ -1,3 +1,5 @@
+![image](reladiff_logo.svg)
+
 &nbsp;
 <br/>
 <br/>
