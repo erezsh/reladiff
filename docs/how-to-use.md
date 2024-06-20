@@ -144,8 +144,14 @@ To learn more about the different options, [read the API reference](https://rela
 
 ## Tips
 
-- If you only care for a boolean (yes/no) response, set `--limit=1` for a much faster result.
+- If you are only interested in whether something changed, i.e. a yes/no answer, set `--limit 1`. Reladiff will return as soon as it finds the first difference.
 
-- Setting a higher thread count may help performance significantly, depending on the database.
+- Ensure that you have indexes on the columns you are comparing. Preferably a compound index, if relevant. You can run with `--interactive` to see an EXPLAIN for the queries.
 
-- a low `--bisection-threshold` will minimize the amount of network transfer. But if network isn't an issue, a high `--bisection-threshold` will make Reladiff run a lot faster.
+- Setting a higher thread count may help performance significantly, depending on the database. For databases that limit concurrency per query, such as PostgreSQL/MySQL, this can improve performance dramatically.
+
+- A low `--bisection-threshold` will minimize the amount of network transfer. But if network isn't an issue, a high `--bisection-threshold` will make Reladiff run a lot faster.
+
+- If the table is very large, consider a larger --bisection-factor. Otherwise, you may run into timeouts.
+
+- The fewer columns you verify, the faster Reladiff will be. If you're only interested in additions/deletions, verifying the primary key could be enough. If you have an automatic `updated` column, it might be enough to capture changes, i.e. comparing all the data isn't always necessary.
