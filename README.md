@@ -11,7 +11,7 @@ Reladiff is free, open-source, user-friendly, extensively tested, and delivers f
 
 ### Key Features:
 
- 1. **Cross-Database Diff**: *Reladiff* Reladiff employs a divide-and-conquer algorithm, based on matching hashes, to efficiently identify modified segments and download only the necessary data for comparison. This approach ensures exceptional performance when differences are minimal.
+ 1. **Cross-Database Diff**: Reladiff employs a divide-and-conquer algorithm, based on matching hashes, to efficiently identify modified segments and download only the necessary data for comparison. This approach ensures exceptional performance when differences are minimal.
 
     - ⇄  Diffs across over a dozen different databases (e.g. *PostgreSQL* -> *Snowflake*) !
 

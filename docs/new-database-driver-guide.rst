@@ -1,11 +1,11 @@
-How to implement a new database driver for reladiff
+How to implement a new database driver for Reladiff
 ====================================================
 
 **This guide is out-of-date!** New databases should be added first in `Sqeleton <https://github.com/erezsh/sqeleton>`_.
 
 First, read through the `CONTRIBUTING.md <https://github.com/erezsh/reladiff/blob/master/CONTRIBUTING.md>`_ document.
 
-Make sure reladiff is set up for development, and that all the tests pass (try to at least set it up for mysql and postgresql)
+Make sure Reladiff is set up for development, and that all the tests pass (try to at least set it up for mysql and postgresql)
 
 Look at the other database drivers for example and inspiration.
 
@@ -24,7 +24,7 @@ These dependencies should be specified in the ``pyproject.toml`` file, in ``[too
 
 Then, users can install the dependencies needed for your database driver, with ``pip install 'reladiff[postgresql]``.
 
-This way, reladiff can support a wide variety of drivers, without requiring our users to install libraries that they won't use.
+This way, Reladiff can support a wide variety of drivers, without requiring our users to install libraries that they won't use.
 
 2. Implement a database module
 ------------------------------
@@ -98,7 +98,7 @@ Documentation:
 :data:`TYPE_CLASSES`
 ~~~~~~~~~~~~~~~~~~~~~~
 
-Each database class must have a ``TYPE_CLASSES`` dictionary, which maps between the string data-type, as returned by querying the table schema, into the appropriate reladiff type class, i.e. a subclass of ``database_types.ColType``.
+Each database class must have a ``TYPE_CLASSES`` dictionary, which maps between the string data-type, as returned by querying the table schema, into the appropriate Reladiff type class, i.e. a subclass of ``database_types.ColType``.
 
 :data:`ROUNDS_ON_PREC_LOSS`
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

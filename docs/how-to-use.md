@@ -1,10 +1,10 @@
-# How to use
+# User guide
 
-Once you've installed Reladiff, you can run it from the command-line, or from Python.
+Once you've [installed](https://reladiff.readthedocs.io/en/latest/install.html) Reladiff, you can run it from the command-line, or from Python.
 
 ## How to use from the shell / command-line
 
-Run the following command:
+The basic syntax for reladiff is:
 
 ```bash
 # Cross-DB diff, using hashes
@@ -15,16 +15,16 @@ When both tables belong to the same database, a shorter syntax is availble:
 
 ```bash
 # Same-DB diff, using outer join
-reladiff  DB1_URI  TABLE1_NAME  TABLE2_NAME  [OPTIONS]
+reladiff  DB_URI  TABLE1_NAME  TABLE2_NAME  [OPTIONS]
 ```
 
-Where DB_URL is either a database URL that's compatible with SQLAlchemy, or the name of a database specified in a configuration file.
+`DB_URL` is either a [database URL](supported-databases.md), or the name of a database definition that is specified in a [configuration file](https://reladiff.readthedocs.io/en/latest/how-to-use.html#how-to-use-with-a-configuration-file). Our database URLs conform to the same format as SQLAlchemy.
 
 We recommend using a configuration file, with the ``--conf`` switch, to keep the command simple and manageable.
 
 For a list of example URLs, see [list of supported databases](supported-databases.md).
 
-Note: Because URLs allow many special characters, and may collide with the syntax of your command-line,
+Note: Because URLs allow many special characters, and may collide with the syntax of your shell,
 it's recommended to surround them with quotes.
 
 ### Options
@@ -70,7 +70,7 @@ Reladiff lets you load the configuration for a run from a TOML file.
 
 - Convenience: Set-up the parameters for diffs that need to run often
 
-- Easier and more readable: You can define the database connection settings as config values, instead of in a URI.
+- Easier and more readable: You can define the database connection settings as separate config values, instead of in a single URI.
 
 - Gives you fine-grained control over the settings switches, without requiring any Python code.
 
@@ -139,4 +139,13 @@ for sign, row in diff_tables(table1, table2):
     print(sign, row)
 ```
 
-To learn more about the different options, [read here](file:///C:/code/reladiff/docs/_build/html/python-api.html#reladiff.diff_tables) or run `help(diff_tables)`.
+To learn more about the different options, [read the API reference](https://reladiff.readthedocs.io/en/latest/python-api.html) or run `help(diff_tables)`.
+
+
+## Tips
+
+- If you only care for a boolean (yes/no) response, set `--limit=1` for a much faster result.
+
+- Setting a higher thread count may help performance significantly, depending on the database.
+
+- a low `--bisection-threshold` will minimize the amount of network transfer. But if network isn't an issue, a high `--bisection-threshold` will make Reladiff run a lot faster.

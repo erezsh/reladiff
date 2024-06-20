@@ -1,10 +1,10 @@
-# Contributing to reladiff
+# Contributing to Reladiff
 
 Contributions are very welcome! We'll be happy to help you in the process.
 
 ## What should I know before I get started?
 
-Go through the README and the documentation, and make sure that you understand how reladiff works.
+Go through the README and the documentation, and make sure that you understand how Reladiff works.
 
 ## How to contribute?
 
@@ -12,13 +12,13 @@ Go through the README and the documentation, and make sure that you understand h
 
 Please report the bug with as many details as you can.
 
-1. Include the exact command that you used. Make sure to run reladiff with the `-d` flag for debug output.
+1. Include the exact command that you used. Make sure to run Reladiff with the `-d` flag for debug output.
 2. Provide the entire output of the command. (stdout, logs, exception)
 3. If possible, show us how we could reproduce the bug. i.e. how to set up an environment in which it occurs.
 
 (When pasting, always make sure to redact sensitive information, like passwords.)
 
-If reladiff returns incorrect results, i.e. false-positive or false-negative, please also include the original values.
+If Reladiff returns incorrect results, i.e. false-positive or false-negative, please also include the original values.
 
 Before you report a bug, make sure it doesn't already exist.
 
@@ -26,7 +26,7 @@ See [issues](/erezsh/reladiff/issues/).
 
 ### Suggesting Enhancements
 
-We are always interested to hear about how we can make reladiff better!
+We are always interested to hear about how we can make Reladiff better!
 
 If you'd like us to support a new database, you should open an issue for it, if there isn't one already. If it already exists, make sure to vote for it with a :thumbsup:, to help us priortize it.
 
@@ -50,9 +50,9 @@ To get started, first clone the repository. For example `git clone https://githu
 
 Once inside, you can install the dependencies.
 
-- Option 1: Run `poetry install` to install them in a virtual env. You can then run reladiff using `poetry run reladiff ...` .
+- Option 1: Run `poetry install` to install them in a virtual env. You can then run Reladiff using `poetry run reladiff ...` .
 
-- Option 2: Run `pip install -e .` to install them, and reladiff, in the global context.
+- Option 2: Run `pip install -e .` to install them, and Reladiff, in the global context.
 
 At the bare minimum, you need MySQL to run the tests.
 
@@ -144,7 +144,7 @@ $ poetry run preql -f dev/prepare_db.pql mssql://<uri>
 $ poetry run preql -f dev/prepare_db.pql bigquery:///<project>
 ```
 
-**5. Run **reladiff** against seeded database (optional)**
+**5. Run **Reladiff** against seeded database (optional)**
 
 ```bash
 poetry run python3 -m reladiff postgresql://postgres:Password1@localhost/postgres rating postgresql://postgres:Password1@localhost/postgres rating_del1 --verbose
