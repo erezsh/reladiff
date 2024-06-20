@@ -45,7 +45,7 @@ Key Features
 
 6. **Over a dozen databases supported**: MySQL, Postgres, Snowflake, Bigquery, Oracle, Clickhouse, and more. `See full list <https://reladiff.readthedocs.io/en/latest/supported-databases.html>`_.
 
-Reladiff is a fork of data-diff.
+Reladiff is a fork of an archived project called `data-diff <https://github.com/datafold/data-diff>`_. Code that worked with data-diff should also work with reladiff, without any changes. However, there are a few differences: Reladiff doesn't contain any tracking code. Reladiff doesn't have DBT integration.
 
 Resources
 ---------
