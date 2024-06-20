@@ -1,4 +1,4 @@
-# How to install
+# Installation Guide
 
 ## Install library and CLI (no drivers)
 
@@ -8,7 +8,7 @@ Reladiff is available on [PyPI](https://pypi.org/project/reladiff/). You may ins
 pip install reladiff
 ```
 
-Requires Python 3.8+ with pip.
+Requirements: Python 3.8+ with pip.
 
 ## Install with database drivers
 
