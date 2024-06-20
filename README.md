@@ -36,7 +36,7 @@ Reladiff is free, open-source, user-friendly, extensively tested, and delivers f
 5. **Over a dozen databases supported**. MySQL, Postgres, Snowflake, Bigquery, Oracle, Clickhouse, and more. [See full list](https://reladiff.readthedocs.io/en/latest/supported-databases.html)
 
 
-Reladiff is a fork of data-diff.
+Reladiff is a fork of an archived project called [data-diff](https://github.com/datafold/data-diff).
 
 ## Get Started
 

@@ -7,6 +7,14 @@ on:
 #       - '.github/workflows/**'
 #       - '!dev/**'
   pull_request:
+    paths:
+      - '**.py'
+      - 'pyproject.toml'
+      - '.github/workflows/**'
+      - 'docker-compose.yml'
+      - '!dev/**'
+      - '!docs/**'
+
     branches: [ master ]
   workflow_dispatch:
 
