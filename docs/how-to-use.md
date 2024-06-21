@@ -11,7 +11,7 @@ The basic syntax for reladiff is:
 reladiff  DB1_URI  TABLE1_NAME  DB2_URI  TABLE2_NAME  [OPTIONS]
 ```
 
-When both tables belong to the same database, a shorter syntax is availble:
+When both tables belong to the same database, a shorter syntax is available:
 
 ```bash
 # Same-DB diff, using outer join

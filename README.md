@@ -67,7 +67,7 @@ Once you've installed Reladiff, you can run it from the command-line:
 reladiff  DB1_URI  TABLE1_NAME  DB2_URI  TABLE2_NAME  [OPTIONS]
 ```
 
-When both tables belong to the same database, a shorter syntax is availble:
+When both tables belong to the same database, a shorter syntax is available:
 
 ```bash
 # Same-DB diff, using outer join
@@ -148,7 +148,7 @@ Check out this [technical explanation](https://reladiff.readthedocs.io/en/latest
 
 ## How to Contribute
 * Please read the [contributing guidelines](https://github.com/erezsh/reladiff/blob/master/CONTRIBUTING.md) to get started.
-* Feel free to open an issue or contribute to the project by working on an existing issue.
+* Feel free to open a new issue or work on an existing one.
 
 Big thanks to everyone who contributed so far:
 
