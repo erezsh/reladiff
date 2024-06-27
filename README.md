@@ -123,22 +123,9 @@ reladiff \
   --table-write-limit 10000
 ```
 
-#### More examples
-
-<p align="center">
-  <img alt="diff2" src="https://user-images.githubusercontent.com/1799931/196754998-a88c0a52-8751-443d-b052-26c03d99d9e5.png" />
-</p>
-
-<p align="center">
-  <a href=https://www.loom.com/share/682e4b7d74e84eb4824b983311f0a3b2 target="_blank">
-    <img alt="Intro to Diff" src="https://user-images.githubusercontent.com/1799931/196576582-d3535395-12ef-40fd-bbbb-e205ccae1159.png" width="50%" height="50%" />
-  </a>
-</p>
-
-
 ### Technical Explanation
 
-Check out this [technical explanation](https://reladiff.readthedocs.io/en/latest/technical-explanation.html) of how reladiff works.
+Check out this [technical explanation](https://reladiff.readthedocs.io/en/latest/technical-explanation.html) of how cross-database reladiff works.
 
 ### We're here to help!
 
