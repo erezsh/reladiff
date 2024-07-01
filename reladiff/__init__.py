@@ -1,9 +1,9 @@
-from typing import Sequence, Tuple, Iterator, Optional, Union
+from typing import Sequence, Tuple, Iterable, Optional, Union
 
 from sqeleton.abcs import DbTime, DbPath
 
 from .databases import connect
-from .diff_tables import Algorithm
+from .diff_tables import Algorithm, TableDiffer
 from .hashdiff_tables import HashDiffer, DEFAULT_BISECTION_THRESHOLD, DEFAULT_BISECTION_FACTOR
 from .joindiff_tables import JoinDiffer, TABLE_WRITE_LIMIT
 from .table_segment import TableSegment
@@ -15,7 +15,7 @@ __version__ = "0.5.1"
 def connect_to_table(
     db_info: Union[str, dict],
     table_name: Union[DbPath, str],
-    key_columns: str = ("id",),
+    key_columns: Union[str, Sequence[str]] = ("id",),
     thread_count: Optional[int] = 1,
     **kwargs,
 ) -> TableSegment:
@@ -38,7 +38,7 @@ def connect_to_table(
     if isinstance(table_name, str):
         table_name = db.parse_table_name(table_name)
 
-    return TableSegment(db, table_name, key_columns, **kwargs)
+    return TableSegment(db, tuple(table_name), tuple(key_columns), **kwargs)
 
 
 def diff_tables(
@@ -80,7 +80,7 @@ def diff_tables(
     materialize_all_rows: bool = False,
     # Maximum number of rows to write when materializing, per thread. (joindiff only)
     table_write_limit: int = TABLE_WRITE_LIMIT,
-) -> Iterator:
+) -> Iterable:
     """Finds the diff between table1 and table2.
 
     Parameters:
@@ -151,6 +151,7 @@ def diff_tables(
     if algorithm == Algorithm.AUTO:
         algorithm = Algorithm.JOINDIFF if table1.database is table2.database else Algorithm.HASHDIFF
 
+    differ: TableDiffer
     if algorithm == Algorithm.HASHDIFF:
         differ = HashDiffer(
             bisection_factor=bisection_factor,

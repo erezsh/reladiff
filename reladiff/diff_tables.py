@@ -147,7 +147,9 @@ class TableDiffer(ThreadBase, ABC):
     bisection_factor = 32
     stats: dict = {}
 
-    def diff_tables(self, table1: TableSegment, table2: TableSegment, info_tree: InfoTree = None) -> DiffResultWrapper:
+    def diff_tables(
+        self, table1: TableSegment, table2: TableSegment, *, info_tree: InfoTree = None
+    ) -> DiffResultWrapper:
         """Diff the given tables.
 
         Parameters:
