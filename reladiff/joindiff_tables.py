@@ -15,9 +15,9 @@ from sqeleton.abcs import NumericType
 from sqeleton.queries import (
     table,
     sum_,
-    min_,
-    max_,
-    avg,
+    # min_,
+    # max_,
+    # avg,
     and_,
     if_,
     or_,

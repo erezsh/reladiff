@@ -1,8 +1,6 @@
 """Provides classes for performing a table diff
 """
 
-import re
-import time
 from abc import ABC, abstractmethod
 from enum import Enum
 from contextlib import contextmanager
@@ -14,7 +12,7 @@ from runtype import dataclass
 
 from .info_tree import InfoTree, SegmentInfo
 
-from .utils import run_as_daemon, safezip, getLogger, truncate_error, Vector
+from .utils import safezip, getLogger, Vector
 from .thread_utils import ThreadedYielder
 from .table_segment import TableSegment, create_mesh_from_points
 from sqeleton.abcs import IKey
@@ -29,11 +27,6 @@ class Algorithm(Enum):
 
 
 DiffResult = Iterator[Tuple[str, tuple]]  # Iterator[Tuple[Literal["+", "-"], tuple]]
-
-
-def truncate_error(error: str):
-    first_line = error.split("\n", 1)[0]
-    return re.sub("'(.*?)'", "'***'", first_line)
 
 
 @dataclass

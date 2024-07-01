@@ -78,3 +78,6 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry.scripts]
 reladiff = 'reladiff.__main__:main'
+
+[tool.ruff]
+line-length = 120

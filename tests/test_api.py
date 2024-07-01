@@ -2,9 +2,9 @@ from datetime import datetime, timedelta
 
 from reladiff import diff_tables, connect_to_table, Algorithm
 from reladiff.databases import MySQL
-from sqeleton.queries import table, commit
+from sqeleton.queries import commit
 
-from .common import TEST_MYSQL_CONN_STRING, get_conn, random_table_suffix, DiffTestCase
+from .common import TEST_MYSQL_CONN_STRING, DiffTestCase
 
 
 class TestApi(DiffTestCase):

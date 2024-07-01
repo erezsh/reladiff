@@ -1,9 +1,7 @@
-from contextlib import suppress
 import unittest
 import time
 import json
 import re
-import rich.progress
 import math
 import uuid
 from datetime import datetime, timedelta, timezone
@@ -557,7 +555,7 @@ def _insert_to_table(conn, table_path, values, type):
         assert BENCHMARK, "Table should've been deleted, or we should be in BENCHMARK mode"
         return
     elif current_n_rows > 0:
-        conn.query(drop_table(table_name))
+        conn.query(drop_table(table_path))
         _create_table_with_indexes(conn, table_path, type)
 
     # if BENCHMARK and N_SAMPLES > 10_000:
