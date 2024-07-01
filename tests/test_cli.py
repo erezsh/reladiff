@@ -11,9 +11,7 @@ from .test_diff_tables import test_each_database
 
 def run_reladiff_cli(*args):
     try:
-        stdout = subprocess.check_output(
-            [sys.executable, "-m", "reladiff"] + list(args), stderr=subprocess.PIPE
-        )
+        stdout = subprocess.check_output([sys.executable, "-m", "reladiff"] + list(args), stderr=subprocess.PIPE)
     except subprocess.CalledProcessError as e:
         logging.error(e.stderr)
         raise

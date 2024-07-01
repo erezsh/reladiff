@@ -6,6 +6,7 @@ from typing import Iterator
 from operator import attrgetter
 
 from dataclasses import dataclass, field
+
 # from runtype import dataclass     # TODO fix in runtype
 
 from sqeleton.abcs import ColType_UUID, NumericType, PrecisionType, StringType, Boolean

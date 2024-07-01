@@ -15,9 +15,9 @@ from sqeleton.abcs import NumericType
 from sqeleton.queries import (
     table,
     sum_,
-    min_,
-    max_,
-    avg,
+    # min_,
+    # max_,
+    # avg,
     and_,
     if_,
     or_,
@@ -201,7 +201,6 @@ class JoinDiffer(TableDiffer):
             if self.materialize_to_table
             else None,
         ):
-
             assert len(a_cols) == len(b_cols)
             logger.debug("Querying for different rows")
             diff = db.query(diff_rows, list)

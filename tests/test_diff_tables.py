@@ -3,7 +3,7 @@ from typing import Callable
 import uuid
 import unittest
 
-from sqeleton.queries import table, this, commit, code
+from sqeleton.queries import table, this, commit
 from sqeleton.utils import ArithAlphanumeric, numberToAlphanum
 
 from reladiff.hashdiff_tables import HashDiffer
@@ -425,7 +425,6 @@ class TestAlphanumericKeys(DiffTestCase):
         self.b = table_segment(self.connection, self.table_dst_path, "id", "text_comment", case_sensitive=False)
 
     def test_alphanum_keys(self):
-
         differ = HashDiffer(bisection_factor=2, bisection_threshold=3)
         diff = list(differ.diff_tables(self.a, self.b))
         self.assertEqual(diff, [("-", (str(self.new_alphanum), "This one is different"))])
@@ -484,10 +483,12 @@ class TestVaryingAlphanumericKeys(DiffTestCase):
         diff = list(differ.diff_tables(self.a, self.b))
         self.assertEqual(diff, [("-", (str(self.new_alphanum), "This one is different"))])
 
-        self.connection.query([
-            self.src_table.insert_row("@@@", "<-- this bad value should not break us"),
-            commit,
-        ])
+        self.connection.query(
+            [
+                self.src_table.insert_row("@@@", "<-- this bad value should not break us"),
+                commit,
+            ]
+        )
 
         self.a = table_segment(self.connection, self.table_src_path, "id", "text_comment", case_sensitive=False)
         self.b = table_segment(self.connection, self.table_dst_path, "id", "text_comment", case_sensitive=False)

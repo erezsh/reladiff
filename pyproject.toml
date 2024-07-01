@@ -78,3 +78,13 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry.scripts]
 reladiff = 'reladiff.__main__:main'
+
+[tool.mypy]
+no_implicit_optional=false
+
+[tool.ruff]
+line-length = 120
+
+[tool.black]
+line-length = 120
+target-version = ['py38']
