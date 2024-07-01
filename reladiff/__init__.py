@@ -11,6 +11,7 @@ from .utils import eval_name_template, Vector
 
 __version__ = "0.5.1"
 
+
 def connect_to_table(
     db_info: Union[str, dict],
     table_name: Union[DbPath, str],

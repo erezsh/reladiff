@@ -181,7 +181,11 @@ click.Context.formatter_class = MyHelpFormatter
     metavar="COUNT",
 )
 @click.option(
-    "-w", "--where", default=None, help="An additional 'where' expression to restrict the search space. Beware of SQL Injection!", metavar="EXPR"
+    "-w",
+    "--where",
+    default=None,
+    help="An additional 'where' expression to restrict the search space. Beware of SQL Injection!",
+    metavar="EXPR",
 )
 @click.option("-a", "--algorithm", default=Algorithm.AUTO.value, type=click.Choice([i.value for i in Algorithm]))
 @click.option(

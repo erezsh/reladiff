@@ -116,7 +116,6 @@ class DiffResultWrapper:
         return DiffStats(diff_by_sign, table1_count, table2_count, unchanged, diff_percent)
 
     def get_stats_string(self):
-
         diff_stats = self._get_stats()
         string_output = ""
         string_output += f"{diff_stats.table1_count} rows in table A\n"
@@ -129,7 +128,6 @@ class DiffResultWrapper:
         return string_output
 
     def get_stats_dict(self):
-
         diff_stats = self._get_stats()
         json_output = {
             "rows_A": diff_stats.table1_count,
@@ -167,7 +165,6 @@ class TableDiffer(ThreadBase, ABC):
         return DiffResultWrapper(self._diff_tables_wrapper(table1, table2, info_tree), info_tree, self.stats)
 
     def _diff_tables_wrapper(self, table1: TableSegment, table2: TableSegment, info_tree: InfoTree) -> DiffResult:
-
         try:
             # Query and validate schema
             table1, table2 = self._threaded_call("with_schema", [table1, table2])
