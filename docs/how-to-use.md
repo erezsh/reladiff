@@ -30,11 +30,11 @@ it's recommended to surround them with quotes.
 ### Options
 
   - `--help` - Show help message and exit.
-  - `-k` or `--key-columns` - Name of the primary key column. If none provided, default is 'id'.
+  - `-k` or `--key-columns` - Name of the primary key column. If none provided, default is 'id'. Can be used more than once, for a compound key.
   - `-t` or `--update-column` - Name of updated_at/last_updated column
   - `-c` or `--columns` - Names of extra columns to compare.  Can be used more than once in the same command.
                           Accepts a name or a pattern like in SQL.
-                          Example: `-c col% -c another_col -c %foorb.r%`
+                          Example: `-c col% -c another_col -c %foob.r%`
   - `-l` or `--limit` - Maximum number of differences to find (limits maximum bandwidth and runtime)
   - `-s` or `--stats` - Print stats instead of a detailed diff
   - `-d` or `--debug` - Print debug info
@@ -152,6 +152,6 @@ To learn more about the different options, [read the API reference](https://rela
 
 - A low `--bisection-threshold` will minimize the amount of network transfer. But if network isn't an issue, a high `--bisection-threshold` will make Reladiff run a lot faster.
 
-- If the table is very large, consider a larger --bisection-factor. Otherwise, you may run into timeouts.
+- If you run into timeouts for very large tables, try increasing the `--bisection-factor`.
 
 - The fewer columns you verify, the faster Reladiff will be. If you're only interested in additions/deletions, verifying the primary key could be enough. If you have an automatic `updated` column, it might be enough to capture changes, i.e. comparing all the data isn't always necessary.

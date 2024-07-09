@@ -31,7 +31,7 @@ def diff_sets(a: set, b: set) -> Iterator:
     sb = set(b)
 
     # The first item is always the key (see TableDiffer.relevant_columns)
-    # TODO update when we add compound keys to hashdiff
+    # TODO update to consider compound keys
     d = defaultdict(list)
     for row in a:
         if row not in sb:
