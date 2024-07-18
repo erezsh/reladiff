@@ -694,12 +694,30 @@ class TestTableTableEmpty(DiffTestCase):
         self.b = table_segment(self.connection, self.table_dst_path, "id", "text_comment", case_sensitive=False)
 
         self.differ = HashDiffer(bisection_factor=2)
+        self.differ2 = HashDiffer(bisection_factor=2, allow_empty_tables=True)
+        self.differ3 = JoinDiffer(allow_empty_tables=True)
 
-    def test_right_table_empty(self):
+    def test_empty_table(self):
         self.assertRaises(ValueError, list, self.differ.diff_tables(self.a, self.b))
+        self.assertRaises(ValueError, list, self.differ.diff_tables(self.b, self.a))
 
-    def test_left_table_empty(self):
-        self.assertRaises(ValueError, list, self.differ.diff_tables(self.a, self.b))
+    def test_empty_table2(self):
+        a = list(self.differ2.diff_tables(self.a, self.b))
+        b = list(self.differ2.diff_tables(self.b, self.a))
+        assert len(a) == 100
+        assert len(b) == 100
+        assert all(i[0] == '-' for i in a)
+        assert all(i[0] == '+' for i in b)
+        assert {i[1] for i in a} == {i[1] for i in b}
+
+    def test_empty_table3(self):
+        a = list(self.differ3.diff_tables(self.a, self.b))
+        b = list(self.differ3.diff_tables(self.b, self.a))
+        assert len(a) == 100
+        assert len(b) == 100
+        assert all(i[0] == '-' for i in a)
+        assert all(i[0] == '+' for i in b)
+        assert {i[1] for i in a} == {i[1] for i in b}
 
 
 class TestInfoTree(DiffTestCase):

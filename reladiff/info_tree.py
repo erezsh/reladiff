@@ -1,13 +1,13 @@
-from typing import List, Dict
+from typing import List, Dict, Union
 
 from runtype import dataclass
 
-from .table_segment import TableSegment
+from .table_segment import TableSegment, EmptyTableSegment
 
 
 @dataclass(frozen=False)
 class SegmentInfo:
-    tables: List[TableSegment]
+    tables: List[Union[TableSegment, EmptyTableSegment]]
 
     diff: list = None
     is_diff: bool = None

@@ -65,5 +65,6 @@ class TestCLI(DiffTestCase):
             "datetime",
             "--max-age",
             "1h",
+            "--allow-empty-tables"
         )
         assert len(diff) == 1, diff

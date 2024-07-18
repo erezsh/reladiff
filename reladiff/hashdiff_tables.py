@@ -14,7 +14,7 @@ from sqeleton.abcs import ColType_UUID, NumericType, PrecisionType, StringType, 
 from .info_tree import InfoTree
 from .utils import safezip
 from .thread_utils import ThreadedYielder
-from .table_segment import TableSegment
+from .table_segment import TableSegment, EmptyTableSegment
 
 from .diff_tables import TableDiffer
 
@@ -75,6 +75,10 @@ class HashDiffer(TableDiffer):
             raise ValueError("Must have at least two segments per iteration (i.e. bisection_factor >= 2)")
 
     def _validate_and_adjust_columns(self, table1, table2):
+        if isinstance(table1, EmptyTableSegment) or isinstance(table2, EmptyTableSegment):
+            # Skip all logic; it only pertains to column mismatch
+            return
+
         for c1, c2 in safezip(table1.relevant_columns, table2.relevant_columns):
             if c1 not in table1._schema:
                 raise ValueError(f"Column '{c1}' not found in schema for table {table1}")
