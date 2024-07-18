@@ -80,6 +80,8 @@ def diff_tables(
     materialize_all_rows: bool = False,
     # Maximum number of rows to write when materializing, per thread. (joindiff only)
     table_write_limit: int = TABLE_WRITE_LIMIT,
+    # If false, diffing on empty tables raises an EmptyTable(ValueError) exception.
+    allow_empty_tables: bool = False,
 ) -> Iterable:
     """Finds the diff between table1 and table2.
 
@@ -108,6 +110,7 @@ def diff_tables(
         materialize_to_table (Union[str, DbPath], optional): Path of new table to write diff results to. Disabled if not provided. Used for `JOINDIFF`.
         materialize_all_rows (bool): Materialize every row, not just those that are different. (used for `JOINDIFF`. default: False)
         table_write_limit (int): Maximum number of rows to write when materializing, per thread.
+        allow_empty_tables (bool): If false, diffing on empty tables raises an EmptyTable(ValueError) exception.
 
     Note:
         The following parameters are used to override the corresponding attributes of the given :class:`TableSegment` instances:
@@ -158,6 +161,7 @@ def diff_tables(
             bisection_threshold=bisection_threshold,
             threaded=threaded,
             max_threadpool_size=max_threadpool_size,
+            allow_empty_tables=allow_empty_tables,
         )
     elif algorithm == Algorithm.JOINDIFF:
         if isinstance(materialize_to_table, str):
@@ -170,6 +174,7 @@ def diff_tables(
             materialize_to_table=materialize_to_table,
             materialize_all_rows=materialize_all_rows,
             table_write_limit=table_write_limit,
+            allow_empty_tables=allow_empty_tables,
         )
     else:
         raise ValueError(f"Unknown algorithm: {algorithm}")
