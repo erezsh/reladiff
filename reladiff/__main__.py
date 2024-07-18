@@ -172,6 +172,11 @@ click.Context.formatter_class = MyHelpFormatter
     metavar="COUNT",
 )
 @click.option(
+    "--allow-empty-tables",
+    is_flag=True,
+    help="Allows diffing on empty tables. Otherwise, we raise an EmptyTable(ValueError) exception."
+)
+@click.option(
     "-j",
     "--threads",
     default=None,
@@ -244,6 +249,7 @@ def _main(
     sample_exclusive_rows,
     materialize_all_rows,
     table_write_limit,
+    allow_empty_tables,
     materialize_to_table,
     threads1=None,
     threads2=None,
@@ -341,6 +347,7 @@ def _main(
             sample_exclusive_rows=sample_exclusive_rows,
             materialize_all_rows=materialize_all_rows,
             table_write_limit=table_write_limit,
+            allow_empty_tables=allow_empty_tables,
             materialize_to_table=materialize_to_table
             and db1.parse_table_name(eval_name_template(materialize_to_table)),
         )
@@ -351,6 +358,7 @@ def _main(
             bisection_threshold=bisection_threshold,
             threaded=threaded,
             max_threadpool_size=threads and threads * 2,
+            allow_empty_tables=allow_empty_tables,
         )
 
     table_names = table1, table2
