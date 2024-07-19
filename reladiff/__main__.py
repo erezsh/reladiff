@@ -174,7 +174,7 @@ click.Context.formatter_class = MyHelpFormatter
 @click.option(
     "--allow-empty-tables",
     is_flag=True,
-    help="Allows diffing on empty tables. Otherwise, we raise an EmptyTable(ValueError) exception."
+    help="Allows diffing on empty tables. Otherwise, we raise an EmptyTable(ValueError) exception.",
 )
 @click.option(
     "-j",

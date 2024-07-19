@@ -29,7 +29,6 @@ class Algorithm(Enum):
 DiffResult = Iterator[Tuple[str, tuple]]  # Iterator[Tuple[Literal["+", "-"], tuple]]
 
 
-
 @dataclass
 class ThreadBase:
     "Provides utility methods for optional threading"
@@ -172,7 +171,9 @@ class TableDiffer(ThreadBase, ABC):
     def _diff_tables_wrapper(self, table1: TableSegment, table2: TableSegment, info_tree: InfoTree) -> DiffResult:
         try:
             # Query and validate schema
-            table1, table2 = self._threaded_call("with_schema", [table1, table2], allow_empty_table=self.allow_empty_tables)
+            table1, table2 = self._threaded_call(
+                "with_schema", [table1, table2], allow_empty_table=self.allow_empty_tables
+            )
             self._validate_and_adjust_columns(table1, table2)
 
             yield from self._diff_tables_root(table1, table2, info_tree)
@@ -180,7 +181,6 @@ class TableDiffer(ThreadBase, ABC):
             info_tree.aggregate_info()
 
     def _validate_and_adjust_columns(self, table1: TableSegment, table2: TableSegment) -> DiffResult:
-
         pass
 
     def _diff_tables_root(self, table1: TableSegment, table2: TableSegment, info_tree: InfoTree) -> DiffResult:
@@ -209,7 +209,7 @@ class TableDiffer(ThreadBase, ABC):
         is_empty1 = isinstance(table1, EmptyTableSegment)
         is_empty2 = isinstance(table2, EmptyTableSegment)
 
-        for kt in (([] if is_empty1 else key_types1) + ([] if is_empty2 else key_types2)):
+        for kt in ([] if is_empty1 else key_types1) + ([] if is_empty2 else key_types2):
             if not isinstance(kt, IKey):
                 raise NotImplementedError(f"Cannot use a column of type {kt} as a key")
 
@@ -255,9 +255,9 @@ class TableDiffer(ThreadBase, ABC):
 
         try:
             min_key2, max_key2 = self._parse_key_range_result(key_types1, next(key_ranges))
-        except StopIteration: # First table is empty
+        except StopIteration:  # First table is empty
             return ti
-        except EmptyTable: # Second table is empty
+        except EmptyTable:  # Second table is empty
             if not self.allow_empty_tables:
                 raise
             return ti

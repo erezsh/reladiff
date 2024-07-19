@@ -293,6 +293,7 @@ class TableSegment:
     def key_types(self):
         return [self._schema[i] for i in self.key_columns]
 
+
 @dataclass
 class EmptyTableSegment:
     _table_segment: TableSegment
@@ -314,7 +315,7 @@ class EmptyTableSegment:
         return (0, None)
 
     def __getattr__(self, attr):
-        assert attr in ('database', 'key_columns', 'key_types', 'relevant_columns', '_schema')
+        assert attr in ("database", "key_columns", "key_types", "relevant_columns", "_schema")
         return getattr(self._table_segment, attr)
 
     @property
