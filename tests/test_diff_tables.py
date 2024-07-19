@@ -709,6 +709,7 @@ class TestTableTableEmpty(DiffTestCase):
         assert all(i[0] == '-' for i in a)
         assert all(i[0] == '+' for i in b)
         assert {i[1] for i in a} == {i[1] for i in b}
+        assert not list(self.differ2.diff_tables(self.b, self.b))
 
     def test_empty_table3(self):
         a = list(self.differ3.diff_tables(self.a, self.b))
@@ -718,6 +719,7 @@ class TestTableTableEmpty(DiffTestCase):
         assert all(i[0] == '-' for i in a)
         assert all(i[0] == '+' for i in b)
         assert {i[1] for i in a} == {i[1] for i in b}
+        assert not list(self.differ3.diff_tables(self.b, self.b))
 
 
 class TestInfoTree(DiffTestCase):

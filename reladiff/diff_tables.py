@@ -227,7 +227,11 @@ class TableDiffer(ThreadBase, ABC):
         except EmptyTable:
             if not self.allow_empty_tables:
                 raise
-            min_key1, max_key1 = self._parse_key_range_result(key_types2, next(key_ranges))
+            try:
+                min_key1, max_key1 = self._parse_key_range_result(key_types2, next(key_ranges))
+            except EmptyTable:
+                # Both tables are empty
+                return []
 
         btable1, btable2 = [t.new_key_bounds(min_key=min_key1, max_key=max_key1) for t in (table1, table2)]
 
