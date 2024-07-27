@@ -47,6 +47,8 @@ it's recommended to surround them with quotes.
   - `--max-age` - Considers only rows younger than specified. See `--min-age`.
   - `-j` or `--threads` - Number of worker threads to use per database. Default=1.
   - `-w`, `--where` - An additional 'where' expression to restrict the search space.
+  - `--allow-empty-tables` - Allows diffing on empty tables. Otherwise, we raise an error.
+  - `--case-sensitive` - Column names are treated as case-sensitive. Otherwise, reladiff corrects their case according to schema.
   - `--conf`, `--run` - Specify the run and configuration from a TOML file. (see below)
   - `--bisection-threshold` - Minimal size of segment to be split. Smaller segments will be downloaded and compared locally.
   - `--bisection-factor` - Segments per iteration. When set to 2, it performs binary search.
@@ -59,7 +61,6 @@ it's recommended to surround them with quotes.
   - `--materialize-all-rows` -  Materialize every row, even if they are the same, instead of just the differing rows.
   - `--table-write-limit` - Maximum number of rows to write when creating materialized or sample tables, per thread. Default=1000.
   - `-a`, `--algorithm` `[auto|joindiff|hashdiff]` - Force algorithm choice
-
 
 
 ### How to use with a configuration file

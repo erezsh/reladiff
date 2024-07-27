@@ -34,7 +34,7 @@ from .info_tree import InfoTree
 
 from .query_utils import append_to_table, drop_table
 from .utils import safezip
-from .table_segment import TableSegment
+from .table_segment import TableSegment, EmptyTableSegment
 from .diff_tables import TableDiffer, DiffResult
 from .thread_utils import ThreadedYielder
 
@@ -224,6 +224,9 @@ class JoinDiffer(TableDiffer):
 
         # Test duplicate keys
         for ts in [table1, table2]:
+            if isinstance(ts, EmptyTableSegment):
+                continue
+
             unique = (
                 ts.database.query_table_unique_columns(ts.table_path) if ts.database.SUPPORTS_UNIQUE_CONSTAINT else []
             )

@@ -17,6 +17,10 @@ logger = logging.getLogger("table_segment")
 RECOMMENDED_CHECKSUM_DURATION = 20
 
 
+class EmptyTable(ValueError):
+    pass
+
+
 def split_key_space(min_key: DbKey, max_key: DbKey, count: int) -> List[DbKey]:
     assert min_key < max_key
 
@@ -137,16 +141,30 @@ class TableSegment:
     def _where(self):
         return f"({self.where})" if self.where else None
 
-    def _with_raw_schema(self, raw_schema: dict) -> "TableSegment":
-        schema = self.database._process_table_schema(self.table_path, raw_schema, self.relevant_columns, self._where())
-        return self.new(_schema=create_schema(self.database, self.table_path, schema, self.case_sensitive))
+    def _with_raw_schema(self, raw_schema: dict, refine: bool = True, allow_empty_table=False) -> "TableSegment":
+        # TODO validate all relevant columns are in the schema?
+        cols = {c.lower() for c in self.relevant_columns}
+        raw_schema = {k: v for k, v in raw_schema.items() if k.lower() in cols}
+        schema, samples = self.database.process_query_table_schema(
+            self.table_path, raw_schema, refine=refine, refine_where=self._where()
+        )
+        assert refine or samples is None
+        is_empty_table = samples is not None and not samples
+        if is_empty_table and not allow_empty_table:
+            raise EmptyTable(f"Table {self.table_path} is empty. Use --allow-empty-tables to disable this protection.", self)
 
-    def with_schema(self) -> "TableSegment":
+        res = self.new(_schema=create_schema(self.database, self.table_path, schema, self.case_sensitive))
+
+        return EmptyTableSegment(res) if is_empty_table else res
+
+    def with_schema(self, refine: bool = True, allow_empty_table: bool = False) -> "TableSegment":
         "Queries the table schema from the database, and returns a new instance of TableSegment, with a schema."
         if self._schema:
             return self
 
-        return self._with_raw_schema(self.database.query_table_schema(self.table_path))
+        return self._with_raw_schema(
+            self.database.query_table_schema(self.table_path), refine=refine, allow_empty_table=allow_empty_table
+        )
 
     def _make_key_range(self):
         if self.min_key is not None:
@@ -249,7 +267,10 @@ class TableSegment:
         result = tuple(self.database.query(select, tuple))
 
         if any(i is None for i in result):
-            raise ValueError("Table appears to be empty")
+            # We return EmptyTable instead of raising it, so that we can consume
+            # the key_ranges as an iterator.
+            # _parse_key_range_result() will raise the error we return.
+            return EmptyTable(f"Table {self.table_path} appears to be empty.", self)
 
         # Min/max keys are interleaved
         min_key, max_key = result[::2], result[1::2]
@@ -267,3 +288,59 @@ class TableSegment:
         diff = self.max_key - self.min_key
         assert all(d > 0 for d in diff)
         return int_product(diff)
+
+    @property
+    def key_types(self):
+        return [self._schema[i] for i in self.key_columns]
+
+
+@dataclass
+class EmptyTableSegment:
+    _table_segment: TableSegment
+
+    def approximate_size(self):
+        return 0
+
+    @property
+    def is_bounded(self):
+        return True
+
+    def query_key_range(self) -> Tuple[tuple, tuple]:
+        return EmptyTable()
+
+    def count(self) -> int:
+        return 0
+
+    def count_and_checksum(self) -> Tuple[int, int]:
+        return (0, None)
+
+    def __getattr__(self, attr):
+        assert attr in ("database", "key_columns", "key_types", "relevant_columns", "_schema")
+        return getattr(self._table_segment, attr)
+
+    @property
+    def min_key(self):
+        return None
+
+    @property
+    def max_key(self):
+        return None
+
+    def with_schema(self, refine: bool = True, allow_empty_table: bool = False) -> "TableSegment":
+        assert self._table_segment._schema
+        return self
+
+    def new_key_bounds(self, min_key: Vector, max_key: Vector) -> "TableSegment":
+        return self
+
+    def segment_by_checkpoints(self, checkpoints: List[List[DbKey]]) -> List["TableSegment"]:
+        "Split the current TableSegment to a bunch of smaller ones, separated by the given checkpoints"
+        mesh = create_mesh_from_points(*checkpoints)
+        return [self for s, e in mesh]
+
+    def make_select(self):
+        # XXX shouldn't be called
+        return self._table_segment.make_select()
+
+    def get_values(self) -> list:
+        return []

@@ -14,7 +14,7 @@ from sqeleton.abcs import ColType_UUID, NumericType, PrecisionType, StringType, 
 from .info_tree import InfoTree
 from .utils import safezip
 from .thread_utils import ThreadedYielder
-from .table_segment import TableSegment
+from .table_segment import TableSegment, EmptyTableSegment
 
 from .diff_tables import TableDiffer
 
@@ -75,6 +75,10 @@ class HashDiffer(TableDiffer):
             raise ValueError("Must have at least two segments per iteration (i.e. bisection_factor >= 2)")
 
     def _validate_and_adjust_columns(self, table1, table2):
+        if isinstance(table1, EmptyTableSegment) or isinstance(table2, EmptyTableSegment):
+            # Skip all logic; it only pertains to column mismatch
+            return
+
         for c1, c2 in safezip(table1.relevant_columns, table2.relevant_columns):
             if c1 not in table1._schema:
                 raise ValueError(f"Column '{c1}' not found in schema for table {table1}")
@@ -152,7 +156,12 @@ class HashDiffer(TableDiffer):
             if max_rows < self.bisection_threshold:
                 return self._bisect_and_diff_segments(ti, table1, table2, info_tree, level=level, max_rows=max_rows)
 
-        (count1, checksum1), (count2, checksum2) = self._threaded_call("count_and_checksum", [table1, table2])
+        if isinstance(table1, EmptyTableSegment) or isinstance(table1, EmptyTableSegment):
+            # Optimization: No need to checksum if one of the tables is empty
+            count1, count2 = self._threaded_call("count", [table1, table2])
+            checksum1 = checksum2 = None
+        else:
+            (count1, checksum1), (count2, checksum2) = self._threaded_call("count_and_checksum", [table1, table2])
 
         assert not info_tree.info.rowcounts
         info_tree.info.rowcounts = {1: count1, 2: count2}
@@ -168,7 +177,7 @@ class HashDiffer(TableDiffer):
             info_tree.info.is_diff = False
             return
 
-        if checksum1 == checksum2:
+        if checksum1 == checksum2 and count1 == count2:
             info_tree.info.is_diff = False
             return
 

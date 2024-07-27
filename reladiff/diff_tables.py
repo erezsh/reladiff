@@ -14,7 +14,7 @@ from .info_tree import InfoTree, SegmentInfo
 
 from .utils import safezip, getLogger, Vector
 from .thread_utils import ThreadedYielder
-from .table_segment import TableSegment, create_mesh_from_points
+from .table_segment import TableSegment, create_mesh_from_points, EmptyTable, EmptyTableSegment
 from sqeleton.abcs import IKey
 
 logger = getLogger(__name__)
@@ -43,9 +43,9 @@ class ThreadBase:
         with ThreadPoolExecutor(max_workers=self.max_threadpool_size) as task_pool:
             return task_pool.map(func, iterable)
 
-    def _threaded_call(self, func, iterable):
+    def _threaded_call(self, func, iterable, **kw):
         "Calls a method for each object in iterable."
-        return list(self._thread_map(methodcaller(func), iterable))
+        return list(self._thread_map(methodcaller(func, **kw), iterable))
 
     def _thread_as_completed(self, func, iterable):
         if not self.threaded:
@@ -143,9 +143,11 @@ class DiffResultWrapper:
         return json_output
 
 
+@dataclass(frozen=True)
 class TableDiffer(ThreadBase, ABC):
     bisection_factor = 32
     stats: dict = {}
+    allow_empty_tables: bool = False
 
     def diff_tables(
         self, table1: TableSegment, table2: TableSegment, *, info_tree: InfoTree = None
@@ -169,11 +171,12 @@ class TableDiffer(ThreadBase, ABC):
     def _diff_tables_wrapper(self, table1: TableSegment, table2: TableSegment, info_tree: InfoTree) -> DiffResult:
         try:
             # Query and validate schema
-            table1, table2 = self._threaded_call("with_schema", [table1, table2])
+            table1, table2 = self._threaded_call(
+                "with_schema", [table1, table2], allow_empty_table=self.allow_empty_tables
+            )
             self._validate_and_adjust_columns(table1, table2)
 
             yield from self._diff_tables_root(table1, table2, info_tree)
-
         finally:
             info_tree.aggregate_info()
 
@@ -201,27 +204,39 @@ class TableDiffer(ThreadBase, ABC):
         if len(table1.key_columns) != len(table2.key_columns):
             raise ValueError("Tables should have an equivalent number of key columns!")
 
-        key_types1 = [table1._schema[i] for i in table1.key_columns]
-        key_types2 = [table2._schema[i] for i in table2.key_columns]
+        key_types1 = table1.key_types
+        key_types2 = table2.key_types
+        is_empty1 = isinstance(table1, EmptyTableSegment)
+        is_empty2 = isinstance(table2, EmptyTableSegment)
 
-        for kt in key_types1 + key_types2:
+        for kt in ([] if is_empty1 else key_types1) + ([] if is_empty2 else key_types2):
             if not isinstance(kt, IKey):
                 raise NotImplementedError(f"Cannot use a column of type {kt} as a key")
 
-        for kt1, kt2 in safezip(key_types1, key_types2):
-            if kt1.python_type is not kt2.python_type:
-                raise TypeError(f"Incompatible key types: {kt1} and {kt2}")
+        if not (is_empty1 or is_empty2):
+            for kt1, kt2 in safezip(key_types1, key_types2):
+                if kt1.python_type is not kt2.python_type:
+                    raise TypeError(f"Incompatible key types: {kt1} and {kt2}")
 
         # Query min/max values
         key_ranges = self._threaded_call_as_completed("query_key_range", [table1, table2])
 
         # Start with the first completed value, so we don't waste time waiting
-        min_key1, max_key1 = self._parse_key_range_result(key_types1, next(key_ranges))
+        try:
+            min_key1, max_key1 = self._parse_key_range_result(key_types1, next(key_ranges))
+        except EmptyTable:
+            if not self.allow_empty_tables:
+                raise
+            try:
+                min_key1, max_key1 = self._parse_key_range_result(key_types2, next(key_ranges))
+            except EmptyTable:
+                # Both tables are empty
+                return []
 
         btable1, btable2 = [t.new_key_bounds(min_key=min_key1, max_key=max_key1) for t in (table1, table2)]
 
         logger.info(
-            f"Diffing segments at key-range: {btable1.min_key}..{btable2.max_key}. "
+            f"Diffing segments at key-range: {min_key1}..{max_key1}. "
             f"size: table1 <= {btable1.approximate_size()}, table2 <= {btable2.approximate_size()}"
         )
 
@@ -242,7 +257,14 @@ class TableDiffer(ThreadBase, ABC):
         # └──┴──────┴──┘
         # Overall, the max number of new regions in this 2nd pass is 3^|k| - 1
 
-        min_key2, max_key2 = self._parse_key_range_result(key_types1, next(key_ranges))
+        try:
+            min_key2, max_key2 = self._parse_key_range_result(key_types1, next(key_ranges))
+        except StopIteration:  # First table is empty
+            return ti
+        except EmptyTable:  # Second table is empty
+            if not self.allow_empty_tables:
+                raise
+            return ti
 
         points = [list(sorted(p)) for p in safezip(min_key1, min_key2, max_key1, max_key2)]
         box_mesh = create_mesh_from_points(*points)
@@ -256,6 +278,9 @@ class TableDiffer(ThreadBase, ABC):
         return ti
 
     def _parse_key_range_result(self, key_types, key_range) -> Tuple[Vector, Vector]:
+        if isinstance(key_range, Exception):
+            raise key_range
+
         min_key_values, max_key_values = key_range
 
         # We add 1 because our ranges are exclusive of the end (like in Python)

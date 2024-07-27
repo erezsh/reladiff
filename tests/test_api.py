@@ -55,6 +55,7 @@ class TestApi(DiffTestCase):
         t2 = connect_to_table(TEST_MYSQL_CONN_STRING, self.table_dst_name, where=where)
         diff = list(diff_tables(t1, t2))
         assert len(diff) == 0
+        diff_tables(t1, t2, allow_empty_tables=True)  # Make sure the API exists
 
     def test_api_get_stats_dict(self):
         # XXX Likely to change in the future
