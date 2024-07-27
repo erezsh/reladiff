@@ -156,7 +156,12 @@ class HashDiffer(TableDiffer):
             if max_rows < self.bisection_threshold:
                 return self._bisect_and_diff_segments(ti, table1, table2, info_tree, level=level, max_rows=max_rows)
 
-        (count1, checksum1), (count2, checksum2) = self._threaded_call("count_and_checksum", [table1, table2])
+        if isinstance(table1, EmptyTableSegment) or isinstance(table1, EmptyTableSegment):
+            # Optimization: No need to checksum if one of the tables is empty
+            count1, count2 = self._threaded_call("count", [table1, table2])
+            checksum1 = checksum2 = None
+        else:
+            (count1, checksum1), (count2, checksum2) = self._threaded_call("count_and_checksum", [table1, table2])
 
         assert not info_tree.info.rowcounts
         info_tree.info.rowcounts = {1: count1, 2: count2}
@@ -172,7 +177,7 @@ class HashDiffer(TableDiffer):
             info_tree.info.is_diff = False
             return
 
-        if checksum1 == checksum2:
+        if checksum1 == checksum2 and count1 == count2:
             info_tree.info.is_diff = False
             return
 
