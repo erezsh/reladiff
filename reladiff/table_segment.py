@@ -151,7 +151,7 @@ class TableSegment:
         assert refine or samples is None
         is_empty_table = samples is not None and not samples
         if is_empty_table and not allow_empty_table:
-            raise EmptyTable(f"Table {self.table_path} is empty.", self)
+            raise EmptyTable(f"Table {self.table_path} is empty. Use --allow-empty-tables to disable this protection.", self)
 
         res = self.new(_schema=create_schema(self.database, self.table_path, schema, self.case_sensitive))
 
