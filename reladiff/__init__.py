@@ -9,7 +9,7 @@ from .joindiff_tables import JoinDiffer, TABLE_WRITE_LIMIT
 from .table_segment import TableSegment
 from .utils import eval_name_template, Vector
 
-__version__ = "0.5.1"
+__version__ = "0.5.2"
 
 
 def connect_to_table(

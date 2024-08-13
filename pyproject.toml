@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "reladiff"
-version = "0.5.1"
+version = "0.5.2"
 description = "Command-line tool and Python library to efficiently diff rows across two different databases."
 authors = ["Erez Shinan <erezshin@gmail.com>"]
 license = "MIT"
