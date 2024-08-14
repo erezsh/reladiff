@@ -8,6 +8,7 @@ from runtype import dataclass
 from .utils import safezip, Vector
 from sqeleton.utils import ArithString, split_space
 from sqeleton.databases import Database, DbPath, DbKey, DbTime
+from sqeleton.abcs.database_types import String_UUID
 from sqeleton.schema import Schema, create_schema
 from sqeleton.queries import Count, Checksum, SKIP, table, this, Expr, min_, max_, Code
 from sqeleton.queries.extras import ApplyFuncAndNormalizeAsString, NormalizeAsString
@@ -165,13 +166,26 @@ class TableSegment:
         return self._with_raw_schema(
             self.database.query_table_schema(self.table_path), refine=refine, allow_empty_table=allow_empty_table
         )
+    
+    def _cast_col_value(self, col, value):
+        """Cast the value to the right type, based on the type of the column
+
+        Currently only used to support native vs string UUID values.
+        """
+        assert self._schema
+        t = self._schema[col]
+        if isinstance(t, String_UUID):
+            return str(value)
+        return value
 
     def _make_key_range(self):
         if self.min_key is not None:
             for mn, k in safezip(self.min_key, self.key_columns):
+                mn = self._cast_col_value(k, mn)
                 yield mn <= this[k]
         if self.max_key is not None:
             for k, mx in safezip(self.key_columns, self.max_key):
+                mx = self._cast_col_value(k, mx)
                 yield this[k] < mx
 
     def _make_update_range(self):
