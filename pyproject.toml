@@ -32,7 +32,7 @@ rich = "*"
 toml = ">=0.10.2"
 sqeleton = ">=0.1.5"
 mysql-connector-python = {version=">=8.0.29", optional=true}
-psycopg2 = {version="*", optional=true}
+psycopg2-binary = {version="*", optional=true}
 snowflake-connector-python = {version=">=2.7.2", optional=true}
 cryptography = {version="*", optional=true}
 trino = {version=">=0.314.0", optional=true}
@@ -45,7 +45,7 @@ parameterized = "*"
 unittest-parallel = "*"
 # preql = ">=0.2.19"
 mysql-connector-python = "*"
-psycopg2 = "*"
+psycopg2-binary = "*"
 snowflake-connector-python = ">=2.7.2"
 cryptography = "*"
 trino = ">=0.314.0"
@@ -60,7 +60,7 @@ duckdb = ">=0.6.0"
 # When adding, update also: README + dev deps just above
 preql = ["preql"]
 mysql = ["mysql-connector-python"]
-postgresql = ["psycopg2"]
+postgresql = ["psycopg2-binary"]
 snowflake = ["snowflake-connector-python", "cryptography"]
 presto = ["presto-python-client"]
 oracle = ["cx_Oracle"]
@@ -70,7 +70,7 @@ clickhouse = ["clickhouse-driver"]
 vertica = ["vertica-python"]
 duckdb = ["duckdb"]
 
-all = ["mysql-connector-python", "psycopg2", "snowflake-connector-python", "cryptography", "presto-python-client", "cx_Oracle", "trino", "clickhouse-driver", "vertica-python", "duckdb"]
+all = ["mysql-connector-python", "psycopg2-binary", "snowflake-connector-python", "cryptography", "presto-python-client", "cx_Oracle", "trino", "clickhouse-driver", "vertica-python", "duckdb"]
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
