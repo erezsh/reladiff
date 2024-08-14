@@ -1044,13 +1044,13 @@ files = [
 
 [[package]]
 name = "sqeleton"
-version = "0.1.5"
+version = "0.1.6"
 description = "Python library for querying SQL databases"
 optional = false
 python-versions = "<4.0,>=3.8"
 files = [
-    {file = "sqeleton-0.1.5-py3-none-any.whl", hash = "sha256:efe09c7557cb32e186c78773786baf1998d5b8d43332a760d2802fb42415c4f5"},
-    {file = "sqeleton-0.1.5.tar.gz", hash = "sha256:98dc1aa0c6b2b54bb14b9fa937ae3d53c92c1bf58f8f9c5a37689dc9285534dc"},
+    {file = "sqeleton-0.1.6-py3-none-any.whl", hash = "sha256:8a794803ea57efa8d3f8536a3f4f5efdb45f32b976bf4894c3fa14e078a6c45f"},
+    {file = "sqeleton-0.1.6.tar.gz", hash = "sha256:2b0fd6330129a4280eff3b8f2f6dee73619a6dc13d95045ce72a549c2a04219c"},
 ]
 
 [package.dependencies]
@@ -1064,7 +1064,7 @@ toml = ">=0.10.2"
 clickhouse = ["clickhouse-driver"]
 duckdb = ["duckdb (>=0.7.0)"]
 mysql = ["mysql-connector-python (>=8.0.29)"]
-postgresql = ["psycopg2"]
+postgresql = ["psycopg2-binary"]
 presto = ["presto-python-client"]
 snowflake = ["cryptography", "snowflake-connector-python (>=2.7.2)"]
 trino = ["trino (>=0.314.0)"]
@@ -1219,4 +1219,4 @@ vertica = []
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.8"
-content-hash = "14326fd2c6f99ea706a64dff8a32f6ebad95e8198cb7806074336063b64d720f"
+content-hash = "30e7d8c2fddce984527891b38fc8a907d5770e3527055d8f3b76cb1300c74750"
