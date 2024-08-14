@@ -66,6 +66,7 @@ jobs:
 
       - name: Run unit tests
         env:
+            TRINO_URI: 'trino://postgres@127.0.0.1:8081/postgresql/public'
             SNOWFLAKE_URI: '${{ secrets.SNOWFLAKE_URI }}'
             # PRESTO_URI: '${{ secrets.PRESTO_URI }}'
             # CLICKHOUSE_URI: 'clickhouse://clickhouse:Password1@localhost:9000/clickhouse'
