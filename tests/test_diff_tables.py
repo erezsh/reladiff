@@ -354,11 +354,11 @@ class TestUUIDs(DiffTestCase):
 
         src_table = self.src_table
 
-        self.new_uuid = uuid.uuid1(32132131)
+        self.new_uuid = str(uuid.uuid1(32132131))
 
         self.connection.query(
             [
-                src_table.insert_rows((uuid.uuid1(i), str(i)) for i in range(100)),
+                src_table.insert_rows((str(uuid.uuid1(i)), str(i)) for i in range(100)),
                 table(self.table_dst_path).create(src_table),
                 src_table.insert_row(self.new_uuid, "This one is different"),
                 commit,
@@ -540,10 +540,10 @@ class TestTableUUID(DiffTestCase):
 
         values = []
         for i in range(10):
-            uuid_value = uuid.uuid1(i)
+            uuid_value = str(uuid.uuid1(i))
             values.append((uuid_value, uuid_value))
 
-        self.null_uuid = uuid.uuid1(32132131)
+        self.null_uuid = str(uuid.uuid1(32132131))
 
         self.connection.query(
             [
@@ -572,10 +572,10 @@ class TestTableNullRowChecksum(DiffTestCase):
 
         src_table = self.src_table
 
-        self.null_uuid = uuid.uuid1(1)
+        self.null_uuid = str(uuid.uuid1(1))
         self.connection.query(
             [
-                src_table.insert_row(uuid.uuid1(1), "1"),
+                src_table.insert_row(str(uuid.uuid1(1)), "1"),
                 table(self.table_dst_path).create(src_table),
                 src_table.insert_row(self.null_uuid, None),  # Add a row where a column has NULL value
                 commit,
@@ -624,7 +624,7 @@ class TestConcatMultipleColumnWithNulls(DiffTestCase):
 
         self.diffs = []
         for i in range(0, 8):
-            pk = uuid.uuid1(i)
+            pk = str(uuid.uuid1(i))
             src_row = (str(pk), str(i), None)
             dst_row = (str(pk), str(i) + "-different", None)
 
@@ -685,9 +685,9 @@ class TestTableTableEmpty(DiffTestCase):
     def setUp(self):
         super().setUp()
 
-        self.null_uuid = uuid.uuid1(1)
+        self.null_uuid = str(uuid.uuid1(1))
 
-        diffs = [(uuid.uuid1(i), str(i)) for i in range(100)]
+        diffs = [(str(uuid.uuid1(i)), str(i)) for i in range(100)]
         self.connection.query([self.src_table.insert_rows(diffs), commit])
 
         self.a = table_segment(self.connection, self.table_src_path, "id", "text_comment", case_sensitive=False)
@@ -901,7 +901,7 @@ class TestCompoundKeyAlphanum(DiffTestCase):
     def setUp(self):
         super().setUp()
 
-        rows = [(uuid.uuid1(i), i, str(i)) for i in range(100)]
+        rows = [(str(uuid.uuid1(i)), i, str(i)) for i in range(100)]
         rows2 = list(rows)
         x = rows2[9]
         rows2[9] = (x[0], 9000, x[2])

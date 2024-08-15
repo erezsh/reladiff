@@ -13,7 +13,7 @@ from parameterized import parameterized
 
 from sqeleton.utils import number_to_human
 from sqeleton.queries import table, commit, this, Code
-from sqeleton.queries.api import insert_rows_in_batches
+from sqeleton.queries.api import insert_rows_in_batches, Cast
 
 from reladiff import databases as db
 from reladiff.query_utils import drop_table
@@ -64,10 +64,13 @@ DATABASE_TYPES = {
             "double precision",
             "numeric(6,3)",
         ],
-        "uuid": [
+        "uuid_string": [
             "text",
             "varchar(100)",
             "char(100)",
+        ],
+        "uuid_native": [
+            "uuid",
         ],
         "boolean": [
             "boolean",
@@ -97,11 +100,12 @@ DATABASE_TYPES = {
             "numeric",
             "numeric(65, 10)",
         ],
-        "uuid": [
+        "uuid_string": [
             "varchar(100)",
             "char(100)",
             "varbinary(100)",
         ],
+        "uuid_native": [],
         "boolean": [
             "boolean",
         ],
@@ -118,9 +122,10 @@ DATABASE_TYPES = {
             # "DOUBLE",
             # 'DECIMAL'
         ],
-        "uuid": [
+        "uuid_string": [
             "VARCHAR(100)",
         ],
+        "uuid_native": [],
         "boolean": [
             "BOOLEAN",
         ],
@@ -136,9 +141,10 @@ DATABASE_TYPES = {
             "float64",
             "bignumeric",
         ],
-        "uuid": [
+        "uuid_string": [
             "STRING",
         ],
+        "uuid_native": [],
         "boolean": [
             "boolean",
         ],
@@ -167,10 +173,11 @@ DATABASE_TYPES = {
             "float",
             "numeric",
         ],
-        "uuid": [
+        "uuid_string": [
             "varchar",
             "varchar(100)",
         ],
+        "uuid_native": [],
         "boolean": [
             "boolean",
         ],
@@ -189,11 +196,12 @@ DATABASE_TYPES = {
             "float8",
             "numeric",
         ],
-        "uuid": [
+        "uuid_string": [
             "text",
             "varchar(100)",
             "char(100)",
         ],
+        "uuid_native": [],
         "boolean": [
             "boolean",
         ],
@@ -214,12 +222,13 @@ DATABASE_TYPES = {
             "double precision",
             "Number(5, 2)",
         ],
-        "uuid": [
+        "uuid_string": [
             "CHAR(100)",
             "VARCHAR(100)",
             "NCHAR(100)",
             "NVARCHAR2(100)",
         ],
+        "uuid_native": [],
         "boolean": [],  # Oracle has no boolean type
     },
     db.Presto: {
@@ -240,10 +249,11 @@ DATABASE_TYPES = {
             "decimal(10,2)",
             "decimal(30,6)",
         ],
-        "uuid": [
+        "uuid_string": [
             "varchar",
             "char(100)",
         ],
+        "uuid_native": [],
         "boolean": [
             "boolean",
         ],
@@ -267,9 +277,10 @@ DATABASE_TYPES = {
             "DOUBLE",
             "DECIMAL(6, 2)",
         ],
-        "uuid": [
+        "uuid_string": [
             "STRING",
         ],
+        "uuid_native": [],
         "boolean": [
             "boolean",
         ],
@@ -289,9 +300,12 @@ DATABASE_TYPES = {
             "decimal(10,2)",
             "decimal(30,6)",
         ],
-        "uuid": [
+        "uuid_string": [
             "varchar",
             "char(100)",
+        ],
+        "uuid_native": [
+            "uuid",
         ],
         "boolean": [
             "boolean",
@@ -317,9 +331,10 @@ DATABASE_TYPES = {
             "Float32",
             "Float64",
         ],
-        "uuid": [
+        "uuid_string": [
             "String",
         ],
+        "uuid_native": [],
         "boolean": [
             "boolean",
         ],
@@ -337,10 +352,11 @@ DATABASE_TYPES = {
             "float",
             "float8",
         ],
-        "uuid": [
+        "uuid_string": [
             "varchar(100)",
             "char(100)",
         ],
+        "uuid_native": [],
         "boolean": [
             "boolean",
         ],
@@ -468,12 +484,17 @@ class UUID_Faker:
     def __iter__(self):
         return (uuid.uuid1(i) for i in range(self.max))
 
+class UUID_Faker_String(UUID_Faker):
+    def __iter__(self):
+        return (str(uuid.uuid1(i)) for i in range(self.max))
+
 
 TYPE_SAMPLES = {
     "int": IntFaker(N_SAMPLES),
     "datetime": DateTimeFaker(N_SAMPLES),
     "float": FloatFaker(N_SAMPLES),
-    "uuid": UUID_Faker(N_SAMPLES),
+    "uuid_string": UUID_Faker_String(N_SAMPLES),
+    "uuid_native": UUID_Faker(N_SAMPLES),
     "boolean": BooleanFaker(N_SAMPLES),
 }
 
@@ -654,11 +675,15 @@ class TestDiffCrossDatabaseTables(unittest.TestCase):
         insertion_source_duration = time.monotonic() - start
 
         values_in_source = PaginatedTable(src_table_path, src_conn)
-        if source_db is db.Presto or source_db is db.Trino:
+        if source_db is db.Presto: # or source_db is db.Trino:
             if source_type.startswith("decimal"):
                 values_in_source = ((a, Decimal(b)) for a, b in values_in_source)
             elif source_type.startswith("timestamp"):
                 values_in_source = ((a, datetime.fromisoformat(b.rstrip(" UTC"))) for a, b in values_in_source)
+
+        if type_category.startswith("uuid_native"):
+            if target_db is db.Trino:
+                values_in_source = [(a, Cast(b, Code("uuid"))) for a, b in values_in_source]
 
         start = time.monotonic()
         if not BENCHMARK:
@@ -667,7 +692,7 @@ class TestDiffCrossDatabaseTables(unittest.TestCase):
         _insert_to_table(dst_conn, dst_table_path, values_in_source, target_type)
         insertion_target_duration = time.monotonic() - start
 
-        if type_category == "uuid":
+        if type_category.startswith("uuid_"):
             self.table = TableSegment(self.src_conn, src_table_path, ("col",), None, ("id",), case_sensitive=False)
             self.table2 = TableSegment(self.dst_conn, dst_table_path, ("col",), None, ("id",), case_sensitive=False)
         else:

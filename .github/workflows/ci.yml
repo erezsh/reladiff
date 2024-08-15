@@ -74,7 +74,7 @@ jobs:
         env:
             # SNOWFLAKE_URI: '${{ secrets.SNOWFLAKE_URI }}'
             # PRESTO_URI: '${{ secrets.PRESTO_URI }}'
-            TRINO_URI: '${{ secrets.TRINO_URI }}'
+            TRINO_URI: 'trino://postgres@127.0.0.1:8081/postgresql/public'
             # BIGQUERY_URI: '${{ secrets.BIGQUERY_URI }}'
             CLICKHOUSE_URI: 'clickhouse://clickhouse:Password1@localhost:9000/clickhouse'
             VERTICA_URI: 'vertica://vertica:Password1@localhost:5433/vertica'
