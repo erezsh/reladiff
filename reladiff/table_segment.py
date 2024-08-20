@@ -145,7 +145,8 @@ class TableSegment:
     def _with_raw_schema(self, raw_schema: dict, refine: bool = True, allow_empty_table=False) -> "TableSegment":
         # TODO validate all relevant columns are in the schema?
         cols = {c.lower() for c in self.relevant_columns}
-        raw_schema = {k: v for k, v in raw_schema.items() if k.lower() in cols}
+        # We use v[0] to get the actual name (with correct case)
+        raw_schema = {v[0]: v for k, v in raw_schema.items() if k.lower() in cols}
         schema, samples = self.database.process_query_table_schema(
             self.table_path, raw_schema, refine=refine, refine_where=self._where()
         )

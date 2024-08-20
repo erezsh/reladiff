@@ -68,3 +68,34 @@ class TestCLI(DiffTestCase):
             "--allow-empty-tables"
         )
         assert len(diff) == 1, diff
+
+
+@test_each_database
+class TestCLI_CaseSensitive(DiffTestCase):
+    src_schema = {"ID": int, "Datetime": datetime, "Text_Comment": str}
+
+    def setUp(self) -> None:
+        super().setUp()
+
+        now = self.connection.query(current_timestamp(), datetime)
+
+        rows = [
+            (now, "now"),
+            (now - timedelta(seconds=10), "a"),
+            (now - timedelta(seconds=7), "b"),
+            (now - timedelta(seconds=6), "c"),
+        ]
+
+        self.connection.query(
+            [
+                self.src_table.insert_rows((i, ts, s) for i, (ts, s) in enumerate(rows)),
+                self.dst_table.create(self.src_table),
+                self.src_table.insert_row(len(rows), now - timedelta(seconds=3), "3 seconds ago"),
+                commit,
+            ]
+        )
+
+    def test_cli_case_sensitive(self):
+        conn_str = CONN_STRINGS[self.db_cls]
+        diff = run_reladiff_cli(conn_str, self.table_src_name, conn_str, self.table_dst_name)
+        assert len(diff) == 1
