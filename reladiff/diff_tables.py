@@ -111,7 +111,7 @@ class DiffResultWrapper:
         table1_count = self.info_tree.info.rowcounts[1]
         table2_count = self.info_tree.info.rowcounts[2]
         unchanged = table1_count - diff_by_sign["-"] - diff_by_sign["!"]
-        diff_percent = 1 - unchanged / max(table1_count, table2_count)
+        diff_percent = 1 - unchanged / max(table1_count, table2_count, 1)
 
         return DiffStats(diff_by_sign, table1_count, table2_count, unchanged, diff_percent)
 
@@ -200,7 +200,7 @@ class TableDiffer(ThreadBase, ABC):
     ):
         ...
 
-    def _bisect_and_diff_tables(self, table1: TableSegment, table2: TableSegment, info_tree):
+    def _bisect_and_diff_tables(self, table1: TableSegment, table2: TableSegment, info_tree: InfoTree):
         if len(table1.key_columns) != len(table2.key_columns):
             raise ValueError("Tables should have an equivalent number of key columns!")
 
@@ -231,6 +231,9 @@ class TableDiffer(ThreadBase, ABC):
                 min_key1, max_key1 = self._parse_key_range_result(key_types2, next(key_ranges))
             except EmptyTable:
                 # Both tables are empty
+                info_tree.info.set_diff([])
+                info_tree.info.max_rows = 0
+                info_tree.info.rowcounts = {1:0, 2:0}
                 return []
 
         btable1, btable2 = [t.new_key_bounds(min_key=min_key1, max_key=max_key1) for t in (table1, table2)]

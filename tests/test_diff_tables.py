@@ -702,24 +702,52 @@ class TestTableTableEmpty(DiffTestCase):
         self.assertRaises(ValueError, list, self.differ.diff_tables(self.b, self.a))
 
     def test_empty_table2(self):
-        a = list(self.differ2.diff_tables(self.a, self.b))
-        b = list(self.differ2.diff_tables(self.b, self.a))
+        diff1 = self.differ2.diff_tables(self.a, self.b)
+        diff2 = self.differ2.diff_tables(self.b, self.a)
+        a = list(diff1)
+        b = list(diff2)
         assert len(a) == 100
         assert len(b) == 100
         assert all(i[0] == '-' for i in a)
         assert all(i[0] == '+' for i in b)
         assert {i[1] for i in a} == {i[1] for i in b}
-        assert not list(self.differ2.diff_tables(self.b, self.b))
+        stats1 = diff1.get_stats_dict()
+        assert stats1['rows_A'] == 100
+        assert stats1['rows_B'] == 0
+        stats2 = diff2.get_stats_dict()
+        assert stats2['rows_A'] == 0
+        assert stats2['rows_B'] == 100
+
+    def test_empty_table2b(self):
+        diff3 = self.differ2.diff_tables(self.b, self.b)
+        assert not list(diff3)
+        stats3 = diff3.get_stats_dict()
+        assert stats3['rows_A'] == 0
+        assert stats3['rows_B'] == 0
 
     def test_empty_table3(self):
-        a = list(self.differ3.diff_tables(self.a, self.b))
-        b = list(self.differ3.diff_tables(self.b, self.a))
+        diff1 = self.differ3.diff_tables(self.a, self.b)
+        diff2 = self.differ3.diff_tables(self.b, self.a)
+        a = list(diff1)
+        b = list(diff2)
         assert len(a) == 100
         assert len(b) == 100
         assert all(i[0] == '-' for i in a)
         assert all(i[0] == '+' for i in b)
         assert {i[1] for i in a} == {i[1] for i in b}
-        assert not list(self.differ3.diff_tables(self.b, self.b))
+        stats1 = diff1.get_stats_dict()
+        assert stats1['rows_A'] == 100
+        assert stats1['rows_B'] == 0
+        stats2 = diff2.get_stats_dict()
+        assert stats2['rows_A'] == 0
+        assert stats2['rows_B'] == 100
+
+    def test_empty_table3b(self):
+        diff3 = self.differ3.diff_tables(self.b, self.b)
+        assert not list(diff3)
+        stats3 = diff3.get_stats_dict()
+        assert stats3['rows_A'] == 0
+        assert stats3['rows_B'] == 0
 
 
 class TestInfoTree(DiffTestCase):

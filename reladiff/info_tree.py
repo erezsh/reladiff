@@ -16,7 +16,7 @@ class SegmentInfo:
     rowcounts: Dict[int, int] = {}
     max_rows: int = None
 
-    def set_diff(self, diff):
+    def set_diff(self, diff: list):
         self.diff = diff
         self.diff_count = len(diff)
         self.is_diff = self.diff_count > 0
