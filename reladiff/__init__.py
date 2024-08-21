@@ -98,6 +98,8 @@ def diff_tables(
         max_threadpool_size (int): Maximum size of each threadpool. ``None`` means auto.
                                    Only relevant when `threaded` is ``True``.
                                    There may be many pools, so number of actual threads can be a lot higher.
+                                   (Note: For best performance, we recommend setting this to at least twice the
+                                   `thread_count` argument provided to the driver through `connect()`/`connect_to_table()`.
         where (str, optional): An additional 'where' expression to restrict the search space.
         algorithm (:class:`Algorithm`): Which diffing algorithm to use (`HASHDIFF` or `JOINDIFF`. Default=`AUTO`)
         bisection_factor (int): Into how many segments to bisect per iteration. (Used when algorithm is `HASHDIFF`)

@@ -33,10 +33,7 @@ DATABASE_BY_SCHEME = {
 
 
 class Connect_SetUTC(Connect):
-    """Provides methods for connecting to a supported database using a URL or connection dict.
-
-    Ensures all sessions use UTC Timezone, if possible.
-    """
+    __doc__ = Connect.__call__.__doc__
 
     def _connection_created(self, db):
         db = super()._connection_created(db)
