@@ -43,38 +43,57 @@ class ThreadedYielder(Iterable):
 
     To add a source iterator, call ``submit()`` with a function that returns an iterator.
     Priority for the iterator can be provided via the keyword argument 'priority'. (higher runs first)
+
+    max_workers set the maximum number of worker threads
+    yield_buffer_size sets the size of the "lookahead" buffer for the yielder. Default=1.
+        For lazy computation, set this to 1. Set this to a higher value to reduce latency.
+        Set to 0 for unlimited size.
     """
 
-    def __init__(self, max_workers: Optional[int] = None):
+    def __init__(self, max_workers: Optional[int] = None, yield_buffer_size: int = 1):
         self._pool = PriorityThreadPoolExecutor(max_workers)
         self._futures = deque()
         self._yield = deque()
         self._exception = None
+        self._yield_buffer_size = yield_buffer_size
 
     def _worker(self, fn, *args, **kwargs):
+        while self._yield_buffer_size and len(self._yield) >= self._yield_buffer_size:
+            if self._idle():
+                break
+
         try:
             res = fn(*args, **kwargs)
             if res is not None:
-                self._yield += res
+                self._yield.append(res)
         except Exception as e:
             self._exception = e
 
     def submit(self, fn: Callable, *args, priority: int = 0, **kwargs):
         self._futures.append(self._pool.submit(self._worker, fn, *args, priority=priority, **kwargs))
 
+
+    def _idle(self):
+        if self._exception:
+            raise self._exception
+
+        if not self._futures:
+            # No more tasks
+            return True
+
+        if self._futures[0].done():
+            self._futures.popleft()
+        else:
+            sleep(0.001)
+
     def __iter__(self) -> Iterator:
+        if self._exception:
+            raise self._exception
+
         while True:
-            if self._exception:
-                raise self._exception
-
             while self._yield:
-                yield self._yield.popleft()
+                yield from self._yield.popleft()
 
-            if not self._futures:
-                # No more tasks
-                return
+            if self._idle():
+                break
 
-            if self._futures[0].done():
-                self._futures.popleft()
-            else:
-                sleep(0.001)
