@@ -5,7 +5,7 @@
 from decimal import Decimal
 from functools import partial
 import logging
-from typing import List
+from typing import List, Optional
 from itertools import chain
 
 from runtype import dataclass
@@ -141,7 +141,7 @@ class JoinDiffer(TableDiffer):
 
     stats: dict = {}
 
-    def _diff_tables_root(self, table1: TableSegment, table2: TableSegment, info_tree: InfoTree) -> DiffResult:
+    def _diff_tables_root(self, table1: TableSegment, table2: TableSegment, info_tree: InfoTree, ti: ThreadedYielder) -> DiffResult:
         db = table1.database
 
         if table1.database is not table2.database:
@@ -156,9 +156,9 @@ class JoinDiffer(TableDiffer):
         with self._run_in_background(*bg_funcs):
             if isinstance(db, (Snowflake, BigQuery)):
                 # Don't segment the table; let the database handling parallelization
-                yield from self._diff_segments(None, table1, table2, info_tree, None)
+                yield from self._diff_segments(ti, table1, table2, info_tree, None)
             else:
-                yield from self._bisect_and_diff_tables(table1, table2, info_tree)
+                yield from self._bisect_and_diff_tables(table1, table2, info_tree, ti)
             logger.info("Diffing complete")
             if self.materialize_to_table:
                 logger.info("Materialized diff to table '%s'.", ".".join(self.materialize_to_table))
@@ -169,7 +169,7 @@ class JoinDiffer(TableDiffer):
         table1: TableSegment,
         table2: TableSegment,
         info_tree: InfoTree,
-        max_rows: int,
+        max_rows: Optional[int],
         level=0,
         segment_index=None,
         segment_count=None,
