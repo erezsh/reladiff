@@ -3,7 +3,7 @@ from typing import Sequence, Tuple, Iterable, Optional, Union
 from sqeleton.abcs import DbTime, DbPath
 
 from .databases import connect
-from .diff_tables import Algorithm, TableDiffer
+from .diff_tables import Algorithm, TableDiffer, DiffResultWrapper
 from .hashdiff_tables import HashDiffer, DEFAULT_BISECTION_THRESHOLD, DEFAULT_BISECTION_FACTOR
 from .joindiff_tables import JoinDiffer, TABLE_WRITE_LIMIT
 from .table_segment import TableSegment
@@ -82,7 +82,7 @@ def diff_tables(
     table_write_limit: int = TABLE_WRITE_LIMIT,
     # If false, diffing on empty tables raises an EmptyTable(ValueError) exception.
     allow_empty_tables: bool = False,
-) -> Iterable:
+) -> DiffResultWrapper:
     """Finds the diff between table1 and table2.
 
     Parameters:

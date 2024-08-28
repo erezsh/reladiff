@@ -72,6 +72,8 @@ class ThreadedYielder(Iterable):
     def submit(self, fn: Callable, *args, priority: int = 0, **kwargs):
         self._futures.append(self._pool.submit(self._worker, fn, *args, priority=priority, **kwargs))
 
+    def shutdown(self, wait=True):
+        self._pool.shutdown(wait, cancel_futures=True)
 
     def _idle(self):
         if self._exception:

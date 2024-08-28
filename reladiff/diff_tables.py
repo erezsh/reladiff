@@ -84,6 +84,7 @@ class DiffResultWrapper:
     diff: iter  # DiffResult
     info_tree: InfoTree
     stats: dict
+    _ti: ThreadedYielder
     result_list: list = []
 
     def __iter__(self):
@@ -91,6 +92,11 @@ class DiffResultWrapper:
         for i in self.diff:
             self.result_list.append(i)
             yield i
+
+    def close(self):
+        "Immediately stop diffing and close the thread pool"
+        # TODO we should be able to wait for the thread pool to finish
+        self._ti.shutdown(wait=False)
 
     def _get_stats(self) -> DiffStats:
         list(self)  # Consume the iterator into result_list, if we haven't already
@@ -166,9 +172,12 @@ class TableDiffer(ThreadBase, ABC):
         """
         if info_tree is None:
             info_tree = InfoTree(SegmentInfo([table1, table2]))
-        return DiffResultWrapper(self._diff_tables_wrapper(table1, table2, info_tree), info_tree, self.stats)
+        ti = ThreadedYielder(self.max_threadpool_size)
+        return DiffResultWrapper(self._diff_tables_wrapper(table1, table2, info_tree, ti), info_tree, self.stats, ti)
 
-    def _diff_tables_wrapper(self, table1: TableSegment, table2: TableSegment, info_tree: InfoTree) -> DiffResult:
+    def _diff_tables_wrapper(
+        self, table1: TableSegment, table2: TableSegment, info_tree: InfoTree, ti: ThreadedYielder
+    ) -> DiffResult:
         try:
             # Query and validate schema
             table1, table2 = self._threaded_call(
@@ -176,15 +185,17 @@ class TableDiffer(ThreadBase, ABC):
             )
             self._validate_and_adjust_columns(table1, table2)
 
-            yield from self._diff_tables_root(table1, table2, info_tree)
+            yield from self._diff_tables_root(table1, table2, info_tree, ti)
         finally:
             info_tree.aggregate_info()
 
     def _validate_and_adjust_columns(self, table1: TableSegment, table2: TableSegment) -> DiffResult:
         pass
 
-    def _diff_tables_root(self, table1: TableSegment, table2: TableSegment, info_tree: InfoTree) -> DiffResult:
-        return self._bisect_and_diff_tables(table1, table2, info_tree)
+    def _diff_tables_root(
+        self, table1: TableSegment, table2: TableSegment, info_tree: InfoTree, ti: ThreadedYielder
+    ) -> DiffResult:
+        return self._bisect_and_diff_tables(table1, table2, info_tree, ti)
 
     @abstractmethod
     def _diff_segments(
@@ -197,10 +208,11 @@ class TableDiffer(ThreadBase, ABC):
         level=0,
         segment_index=None,
         segment_count=None,
-    ):
-        ...
+    ): ...
 
-    def _bisect_and_diff_tables(self, table1: TableSegment, table2: TableSegment, info_tree: InfoTree):
+    def _bisect_and_diff_tables(
+        self, table1: TableSegment, table2: TableSegment, info_tree: InfoTree, ti: ThreadedYielder
+    ):
         if len(table1.key_columns) != len(table2.key_columns):
             raise ValueError("Tables should have an equivalent number of key columns!")
 
@@ -233,7 +245,7 @@ class TableDiffer(ThreadBase, ABC):
                 # Both tables are empty
                 info_tree.info.set_diff([])
                 info_tree.info.max_rows = 0
-                info_tree.info.rowcounts = {1:0, 2:0}
+                info_tree.info.rowcounts = {1: 0, 2: 0}
                 return []
 
         btable1, btable2 = [t.new_key_bounds(min_key=min_key1, max_key=max_key1) for t in (table1, table2)]
@@ -243,7 +255,6 @@ class TableDiffer(ThreadBase, ABC):
             f"size: table1 <= {btable1.approximate_size()}, table2 <= {btable2.approximate_size()}"
         )
 
-        ti = ThreadedYielder(self.max_threadpool_size)
         # Bisect (split) the table into segments, and diff them recursively.
         ti.submit(self._bisect_and_diff_segments, ti, btable1, btable2, info_tree)
 
