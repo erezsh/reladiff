@@ -73,7 +73,12 @@ class ThreadedYielder(Iterable):
         self._futures.append(self._pool.submit(self._worker, fn, *args, priority=priority, **kwargs))
 
     def shutdown(self, wait=True):
-        self._pool.shutdown(wait, cancel_futures=True)
+        try:
+            # Python 3.9+
+            self._pool.shutdown(wait, cancel_futures=True)
+        except TypeError:
+            # Python 3.8 doesn't support cancel_futures
+            self._pool.shutdown(wait)
 
     def _idle(self):
         if self._exception:
