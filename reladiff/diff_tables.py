@@ -81,6 +81,12 @@ class DiffStats:
 
 @dataclass
 class DiffResultWrapper:
+    """Wrapper for the diff result, with additional stats and info
+
+    Supports reenterant iteration, context management, and immediate closing of the thread pool.
+
+    Note: Once the threadpool is closed, the iterator will not be able to continue.
+    """
     diff: iter  # DiffResult
     info_tree: InfoTree
     stats: dict
@@ -88,6 +94,10 @@ class DiffResultWrapper:
     result_list: list = []
 
     def __iter__(self):
+        """Iterate over the results of the diff.
+
+        It's a "lazy-list": Repeated calls will return the same results, but will not re-run the diff.
+        """
         yield from self.result_list
         for i in self.diff:
             self.result_list.append(i)
@@ -97,6 +107,11 @@ class DiffResultWrapper:
         "Immediately stop diffing and close the thread pool"
         # TODO we should be able to wait for the thread pool to finish
         self._ti.shutdown(wait=False)
+
+    def __enter__(self):
+        return self
+    def __exit__(self, *args):
+        self.close()
 
     def _get_stats(self) -> DiffStats:
         list(self)  # Consume the iterator into result_list, if we haven't already
@@ -122,6 +137,7 @@ class DiffResultWrapper:
         return DiffStats(diff_by_sign, table1_count, table2_count, unchanged, diff_percent)
 
     def get_stats_string(self):
+        """Return a pretty string of the diff stats (used by the CLI)"""
         diff_stats = self._get_stats()
         string_output = ""
         string_output += f"{diff_stats.table1_count} rows in table A\n"
@@ -134,6 +150,7 @@ class DiffResultWrapper:
         return string_output
 
     def get_stats_dict(self):
+        """Return a dictionary of the diff stats"""
         diff_stats = self._get_stats()
         json_output = {
             "rows_A": diff_stats.table1_count,

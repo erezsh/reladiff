@@ -120,9 +120,15 @@ def diff_tables(
         If different values are needed per table, it's possible to omit them here, and instead set
         them directly when creating each :class:`TableSegment`.
 
+    Note:
+        It is recommended to call .close() on the returned object when done, to release thread-pool. Alternatively, you may use it as a context manager.
+
     Example:
         >>> table1 = connect_to_table('postgresql:///', 'Rating', 'id')
         >>> list(diff_tables(table1, table1))
+        []
+        >>> with diff_tables(table1, table1) as diff:
+        ...     print(list(diff))
         []
 
     See Also:
