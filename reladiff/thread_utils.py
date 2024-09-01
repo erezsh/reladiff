@@ -57,10 +57,11 @@ class ThreadedYielder(Iterable):
         self._exception = None
         self._yield_buffer_size = yield_buffer_size
 
-    def _worker(self, fn, *args, **kwargs):
-        while self._yield_buffer_size and len(self._yield) >= self._yield_buffer_size:
-            if self._idle():
-                break
+    def _worker(self, fn, *args, _priority=0, **kwargs):
+        if self._yield_buffer_size and len(self._yield) >= self._yield_buffer_size:
+            self._idle()
+            self._futures.append(self._pool.submit(self._worker, fn, *args, priority=_priority, _priority=_priority, **kwargs))
+            return
 
         try:
             res = fn(*args, **kwargs)
@@ -70,7 +71,7 @@ class ThreadedYielder(Iterable):
             self._exception = e
 
     def submit(self, fn: Callable, *args, priority: int = 0, **kwargs):
-        self._futures.append(self._pool.submit(self._worker, fn, *args, priority=priority, **kwargs))
+        self._futures.append(self._pool.submit(self._worker, fn, *args, priority=priority, _priority=priority, **kwargs))
 
     def shutdown(self, wait=True):
         try:
@@ -84,14 +85,14 @@ class ThreadedYielder(Iterable):
         if self._exception:
             raise self._exception
 
+        while self._futures and self._futures[0].done():
+            self._futures.popleft()
+
         if not self._futures:
             # No more tasks
             return True
 
-        if self._futures[0].done():
-            self._futures.popleft()
-        else:
-            sleep(0.001)
+        sleep(0.001)
 
     def __iter__(self) -> Iterator:
         if self._exception:
