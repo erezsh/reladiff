@@ -1,7 +1,7 @@
 import os
 from numbers import Number
 import logging
-from collections import defaultdict
+from itertools import chain
 from typing import Iterator, Any, List, Tuple
 from operator import attrgetter
 
@@ -32,16 +32,10 @@ def diff_sets(a: List[Tuple[Any, ...]], b: List[Tuple[Any, ...]]) -> Iterator:
 
     # The first item is always the key (see TableDiffer.relevant_columns)
     # TODO update to consider compound keys
-    d = defaultdict(list)
-    for row in a:
-        if row not in sb:
-            d[row[0]].append(("-", row))
-    for row in b:
-        if row not in sa:
-            d[row[0]].append(("+", row))
-
-    for _k, v in sorted(d.items(), key=lambda i: i[0]):
-        yield from v
+    yield from sorted(
+        chain((("-", item) for item in sa - sb),
+              (("+", item) for item in sb - sa)), key=lambda i: i[1]
+    )
 
 
 @dataclass(frozen=True)
