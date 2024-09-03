@@ -2,7 +2,7 @@ import os
 from numbers import Number
 import logging
 from collections import defaultdict
-from typing import Iterator
+from typing import Iterator, Any, List, Tuple
 from operator import attrgetter
 
 from dataclasses import dataclass, field
@@ -26,7 +26,7 @@ DEFAULT_BISECTION_FACTOR = 32
 logger = logging.getLogger("hashdiff_tables")
 
 
-def diff_sets(a: set, b: set) -> Iterator:
+def diff_sets(a: List[Tuple[Any, ...]], b: List[Tuple[Any, ...]]) -> Iterator:
     sa = set(a)
     sb = set(b)
 
