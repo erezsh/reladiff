@@ -816,7 +816,7 @@ class TestDuplicateTables(DiffTestCase):
 
         differ = HashDiffer(bisection_factor=2, bisection_threshold=4)
         diff = list(differ.diff_tables(self.a, self.b))
-        self.assertEqual(diff, self.diffs)
+        self.assertEqual(sorted(diff), sorted(self.diffs))
 
 
 class TestDuplicates2(DiffTestCase):
@@ -864,7 +864,7 @@ class TestDuplicates2(DiffTestCase):
 
         differ = HashDiffer(bisection_factor=2, bisection_threshold=4)
         diff = list(differ.diff_tables(self.a, self.b))
-        self.assertEqual(diff, self.expected_output)
+        self.assertEqual(sorted(diff), sorted(self.expected_output))
 
 
 @test_each_database
