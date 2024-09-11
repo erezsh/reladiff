@@ -1,9 +1,10 @@
 import os
 from numbers import Number
 import logging
-from collections import defaultdict
 from typing import Iterator
 from operator import attrgetter
+from collections import Counter
+from itertools import repeat
 
 from dataclasses import dataclass, field
 
@@ -26,22 +27,17 @@ DEFAULT_BISECTION_FACTOR = 32
 logger = logging.getLogger("hashdiff_tables")
 
 
-def diff_sets(a: set, b: set) -> Iterator:
-    sa = set(a)
-    sb = set(b)
-
-    # The first item is always the key (see TableDiffer.relevant_columns)
-    # TODO update to consider compound keys
-    d = defaultdict(list)
-    for row in a:
-        if row not in sb:
-            d[row[0]].append(("-", row))
-    for row in b:
-        if row not in sa:
-            d[row[0]].append(("+", row))
-
-    for _k, v in sorted(d.items(), key=lambda i: i[0]):
-        yield from v
+def diff_sets(a: list, b: list) -> Iterator:
+    c = Counter(b)
+    c.subtract(a)
+    x = sorted(c.items(), key=lambda i: i[0])   # sort by key
+    for k, count in x:
+        if count < 0:
+            sign = "-"
+            count = -count
+        else:
+            sign = "+"
+        yield from repeat((sign, k), count)
 
 
 @dataclass(frozen=True)
