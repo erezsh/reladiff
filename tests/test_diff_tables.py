@@ -787,9 +787,9 @@ class TestDuplicateTables(DiffTestCase):
             (12, 'ABCDE'),
             (12, 'ABCDE');
         table 2:
+            (4,'ABCDE'),
+            (4,'ABCDE'),
             (4,'ABCDEF'),
-            (4,'ABCDE'),
-            (4,'ABCDE'),
             (6,'ABCDE'),
             (6,'ABCDE'),
             (6,'ABCDE');
@@ -800,7 +800,7 @@ class TestDuplicateTables(DiffTestCase):
         src_values = [(12, "ABCDE"), (12, "ABCDE")]
         dst_values = [(4, "ABCDEF"), (4, "ABCDE"), (4, "ABCDE"), (6, "ABCDE"), (6, "ABCDE"), (6, "ABCDE")]
 
-        self.diffs = [("-", (str(r[0]), r[1])) for r in src_values] + [("+", (str(r[0]), r[1])) for r in dst_values]
+        self.diffs = sorted([("-", (str(r[0]), r[1])) for r in src_values]) + sorted([("+", (str(r[0]), r[1])) for r in dst_values])
 
         self.connection.query([self.src_table.insert_rows(src_values), self.dst_table.insert_rows(dst_values), commit])
 
@@ -816,7 +816,55 @@ class TestDuplicateTables(DiffTestCase):
 
         differ = HashDiffer(bisection_factor=2, bisection_threshold=4)
         diff = list(differ.diff_tables(self.a, self.b))
-        self.assertEqual(diff, self.diffs)
+        self.assertEqual(sorted(diff), sorted(self.diffs))
+
+
+class TestDuplicates2(DiffTestCase):
+    db_cls = db.MySQL
+
+    src_schema = dst_schema = {"id": int, "data": str}
+
+    def setUp(self):
+        super().setUp()
+
+        a = [
+            (12, "ABCDE"),
+            (12, "ABCDE"),
+            (6, "ABCDE")
+        ]
+
+        b = [
+            (4, "ABCDEF"),
+            (4, "ABCDE"),
+            (4, "ABCDE"),
+            (6, "ABCDE"),
+            (6, "ABCDE")
+        ]
+
+        self.expected_output = [
+            ('+', ("6", 'ABCDE')),
+            ('+', ("4", 'ABCDE')),
+            ('+', ("4", 'ABCDE')),
+            ('+', ("4", 'ABCDEF')),
+            ('-', ("12", 'ABCDE')),
+            ('-', ("12", 'ABCDE')),
+        ]
+
+        self.connection.query([self.src_table.insert_rows(a), self.dst_table.insert_rows(b), commit])
+
+        self.a = table_segment(
+            self.connection, self.table_src_path, "id", extra_columns=("data",), case_sensitive=False
+        )
+        self.b = table_segment(
+            self.connection, self.table_dst_path, "id", extra_columns=("data",), case_sensitive=False
+        )
+
+    def test_duplicates2(self):
+        """If there are duplicates in data, we want to return them as well"""
+
+        differ = HashDiffer(bisection_factor=2, bisection_threshold=4)
+        diff = list(differ.diff_tables(self.a, self.b))
+        self.assertEqual(sorted(diff), sorted(self.expected_output))
 
 
 @test_each_database
