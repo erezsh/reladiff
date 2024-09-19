@@ -156,6 +156,12 @@ click.Context.formatter_class = MyHelpFormatter
     help="Skip validating the uniqueness of the key column during joindiff, which is costly in non-cloud dbs.",
 )
 @click.option(
+    "--skip-sort-results",
+    is_flag=True,
+    help="Skip sorting the hashdiff output by key for better performance. "
+    "Entries with the same key but different column values may not appear adjacent in the output.",
+)
+@click.option(
     "--sample-exclusive-rows",
     is_flag=True,
     help="Sample several rows that only appear in one of the tables, but not the other. (joindiff only)",
@@ -246,6 +252,7 @@ def _main(
     json_output,
     where,
     assume_unique_key,
+    skip_sort_results,
     sample_exclusive_rows,
     materialize_all_rows,
     table_write_limit,
@@ -359,6 +366,7 @@ def _main(
             threaded=threaded,
             max_threadpool_size=threads and threads * 2,
             allow_empty_tables=allow_empty_tables,
+            skip_sort_results=skip_sort_results,
         )
 
     table_names = table1, table2
