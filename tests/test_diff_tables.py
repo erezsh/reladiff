@@ -867,6 +867,62 @@ class TestDuplicates2(DiffTestCase):
         self.assertEqual(sorted(diff), sorted(self.expected_output))
 
 
+class TestSkipSortResults(DiffTestCase):
+    db_cls = db.MySQL
+
+    src_schema = dst_schema = {"id": int, "data": str}
+
+    def setUp(self):
+        super().setUp()
+
+        a = [
+            (1, "a"),
+            (2, "b"),
+            (3, "c"),
+            (4, "x"),
+        ]
+
+        b = [
+            (1, "a"),
+            (2, "b"),
+            (3, "z"),
+            (4, "d"),
+        ]
+
+        self.expected_output_for_false = [
+            ('-', ('3', 'c')),
+            ('+', ('3', 'z')),
+            ('+', ('4', 'd')),
+            ('-', ('4', 'x')),
+        ]
+
+        self.expected_output_for_true = [
+            ('+', ('3', 'z')),
+            ('+', ('4', 'd')),
+            ('-', ('3', 'c')),
+            ('-', ('4', 'x')),
+        ]
+
+        self.connection.query([self.src_table.insert_rows(a), self.dst_table.insert_rows(b), commit])
+
+        self.a = table_segment(
+            self.connection, self.table_src_path, "id", extra_columns=("data",), case_sensitive=False
+        )
+        self.b = table_segment(
+            self.connection, self.table_dst_path, "id", extra_columns=("data",), case_sensitive=False
+        )
+
+    def test_skip_sort_results(self):
+
+        differ_false = HashDiffer(bisection_factor=2, bisection_threshold=4, skip_sort_results=False)
+        diff_false = list(differ_false.diff_tables(self.a, self.b))
+        self.assertEqual(diff_false, self.expected_output_for_false)
+
+        differ_true = HashDiffer(bisection_factor=2, bisection_threshold=4, skip_sort_results=True)
+        diff_true = list(differ_true.diff_tables(self.a, self.b))
+        self.assertEqual(diff_true, self.expected_output_for_true)
+
+
 @test_each_database
 class TestCompoundKeySimple1(DiffTestCase):
     src_schema = {"id": int, "id2": int}
