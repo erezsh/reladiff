@@ -82,6 +82,8 @@ def diff_tables(
     table_write_limit: int = TABLE_WRITE_LIMIT,
     # If false, diffing on empty tables raises an EmptyTable(ValueError) exception.
     allow_empty_tables: bool = False,
+    # Skip sorting the hashdiff output by key for better performance. (hashdiff only)
+    skip_sort_results: bool = False,
 ) -> DiffResultWrapper:
     """Finds the diff between table1 and table2.
 
@@ -113,6 +115,7 @@ def diff_tables(
         materialize_all_rows (bool): Materialize every row, not just those that are different. (used for `JOINDIFF`. default: False)
         table_write_limit (int): Maximum number of rows to write when materializing, per thread.
         allow_empty_tables (bool): If false, diffing on empty tables raises an EmptyTable(ValueError) exception.
+        skip_sort_results (bool): Skip sorting the hashdiff output by key for better performance. (used for `HASHDIFF`. default: False)
 
     Note:
         The following parameters are used to override the corresponding attributes of the given :class:`TableSegment` instances:
@@ -170,6 +173,7 @@ def diff_tables(
             threaded=threaded,
             max_threadpool_size=max_threadpool_size,
             allow_empty_tables=allow_empty_tables,
+            skip_sort_results=skip_sort_results,
         )
     elif algorithm == Algorithm.JOINDIFF:
         if isinstance(materialize_to_table, str):

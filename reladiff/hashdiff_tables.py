@@ -27,10 +27,10 @@ DEFAULT_BISECTION_FACTOR = 32
 logger = logging.getLogger("hashdiff_tables")
 
 
-def diff_sets(a: list, b: list) -> Iterator:
+def diff_sets(a: list, b: list, skip_sort_results: bool) -> Iterator:
     c = Counter(b)
     c.subtract(a)
-    x = sorted(c.items(), key=lambda i: i[0])   # sort by key
+    x = c.items() if skip_sort_results else sorted(c.items(), key=lambda i: i[0])   # sort by key
     for k, count in x:
         if count < 0:
             sign = "-"
@@ -56,10 +56,13 @@ class HashDiffer(TableDiffer):
         max_threadpool_size (int): Maximum size of each threadpool. ``None`` means auto.
                                    Only relevant when `threaded` is ``True``.
                                    There may be many pools, so number of actual threads can be a lot higher.
+        skip_sort_results (bool): Skip sorting the hashdiff output by key for better performance.
+                                  Entries with the same key but different column values may not appear adjacent in the output.
     """
 
     bisection_factor: int = DEFAULT_BISECTION_FACTOR
     bisection_threshold: Number = DEFAULT_BISECTION_THRESHOLD  # Accepts inf for tests
+    skip_sort_results: bool = False
 
     stats: dict = field(default_factory=dict)
 
@@ -201,7 +204,7 @@ class HashDiffer(TableDiffer):
         # This saves time, as bisection speed is limited by ping and query performance.
         if max_rows < self.bisection_threshold or max_space_size < self.bisection_factor * 2:
             rows1, rows2 = self._threaded_call("get_values", [table1, table2])
-            diff = list(diff_sets(rows1, rows2))
+            diff = list(diff_sets(rows1, rows2, self.skip_sort_results))
 
             info_tree.info.set_diff(diff)
             info_tree.info.rowcounts = {1: len(rows1), 2: len(rows2)}
