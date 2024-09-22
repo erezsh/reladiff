@@ -153,7 +153,8 @@ click.Context.formatter_class = MyHelpFormatter
 @click.option(
     "--assume-unique-key",
     is_flag=True,
-    help="Skip validating the uniqueness of the key column during joindiff, which is costly in non-cloud dbs.",
+    help="Skip validating the uniqueness of the key column during joindiff, which is costly in non-cloud dbs."
+    "Also, disables duplicate rows support in hashdiff.",
 )
 @click.option(
     "--skip-sort-results",
@@ -367,6 +368,7 @@ def _main(
             max_threadpool_size=threads and threads * 2,
             allow_empty_tables=allow_empty_tables,
             skip_sort_results=skip_sort_results,
+            duplicate_rows_support=not assume_unique_key,
         )
 
     table_names = table1, table2
