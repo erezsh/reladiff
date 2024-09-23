@@ -28,17 +28,16 @@ logger = logging.getLogger("hashdiff_tables")
 
 
 def diff_sets(a: list, b: list, skip_sort_results: bool, duplicate_rows_support: bool) -> Iterator:
-    def gen_diff():
-        if duplicate_rows_support:
-            c = Counter(b)
-            c.subtract(a)
-            return (("+", k) if count > 0 else ("-", k) for k, count in c.items() for _ in range(abs(count)))
-        else:
-            sa = set(a)
-            sb = set(b)
-            return chain((("-", x) for x in sa - sb), (("+", x) for x in sb - sa))
+    if duplicate_rows_support:
+        c = Counter(b)
+        c.subtract(a)
+        diff = (("+", k) if count > 0 else ("-", k) for k, count in c.items() for _ in range(abs(count)))
+    else:
+        sa = set(a)
+        sb = set(b)
+        diff = chain((("-", x) for x in sa - sb), (("+", x) for x in sb - sa))
 
-    return gen_diff() if skip_sort_results else sorted(gen_diff(), key=lambda i: i[1])   # sort by key
+    return diff if skip_sort_results else sorted(diff, key=lambda i: i[1])   # sort by key
 
 
 @dataclass(frozen=True)
