@@ -841,12 +841,18 @@ class TestDuplicates2(DiffTestCase):
             (6, "ABCDE")
         ]
 
-        self.expected_output = [
+        self.expected_output_with_dups = [
             ('+', ("6", 'ABCDE')),
             ('+', ("4", 'ABCDE')),
             ('+', ("4", 'ABCDE')),
             ('+', ("4", 'ABCDEF')),
             ('-', ("12", 'ABCDE')),
+            ('-', ("12", 'ABCDE')),
+        ]
+
+        self.expected_output_no_dups = [
+            ('+', ("4", 'ABCDE')),
+            ('+', ("4", 'ABCDEF')),
             ('-', ("12", 'ABCDE')),
         ]
 
@@ -862,9 +868,13 @@ class TestDuplicates2(DiffTestCase):
     def test_duplicates2(self):
         """If there are duplicates in data, we want to return them as well"""
 
-        differ = HashDiffer(bisection_factor=2, bisection_threshold=4)
+        differ = HashDiffer(bisection_factor=2, bisection_threshold=4, duplicate_rows_support=True)
         diff = list(differ.diff_tables(self.a, self.b))
-        self.assertEqual(sorted(diff), sorted(self.expected_output))
+        self.assertEqual(sorted(diff), sorted(self.expected_output_with_dups))
+
+        differ = HashDiffer(bisection_factor=2, bisection_threshold=4, duplicate_rows_support=False)
+        diff = list(differ.diff_tables(self.a, self.b))
+        self.assertEqual(sorted(diff), sorted(self.expected_output_no_dups))
 
 
 class TestSkipSortResults(DiffTestCase):

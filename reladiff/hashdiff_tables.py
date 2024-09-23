@@ -4,7 +4,7 @@ import logging
 from typing import Iterator
 from operator import attrgetter
 from collections import Counter
-from itertools import repeat
+from itertools import chain
 
 from dataclasses import dataclass, field
 
@@ -27,17 +27,17 @@ DEFAULT_BISECTION_FACTOR = 32
 logger = logging.getLogger("hashdiff_tables")
 
 
-def diff_sets(a: list, b: list, skip_sort_results: bool) -> Iterator:
-    c = Counter(b)
-    c.subtract(a)
-    x = c.items() if skip_sort_results else sorted(c.items(), key=lambda i: i[0])   # sort by key
-    for k, count in x:
-        if count < 0:
-            sign = "-"
-            count = -count
-        else:
-            sign = "+"
-        yield from repeat((sign, k), count)
+def diff_sets(a: list, b: list, skip_sort_results: bool, duplicate_rows_support: bool) -> Iterator:
+    if duplicate_rows_support:
+        c = Counter(b)
+        c.subtract(a)
+        diff = (("+", k) if count > 0 else ("-", k) for k, count in c.items() for _ in range(abs(count)))
+    else:
+        sa = set(a)
+        sb = set(b)
+        diff = chain((("-", x) for x in sa - sb), (("+", x) for x in sb - sa))
+
+    return diff if skip_sort_results else sorted(diff, key=lambda i: i[1])   # sort by key
 
 
 @dataclass(frozen=True)
@@ -58,11 +58,13 @@ class HashDiffer(TableDiffer):
                                    There may be many pools, so number of actual threads can be a lot higher.
         skip_sort_results (bool): Skip sorting the hashdiff output by key for better performance.
                                   Entries with the same key but different column values may not appear adjacent in the output.
+        duplicate_rows_support (bool): If ``True``, the algorithm will support duplicate rows in the tables.
     """
 
     bisection_factor: int = DEFAULT_BISECTION_FACTOR
     bisection_threshold: Number = DEFAULT_BISECTION_THRESHOLD  # Accepts inf for tests
     skip_sort_results: bool = False
+    duplicate_rows_support: bool = True
 
     stats: dict = field(default_factory=dict)
 
@@ -204,7 +206,7 @@ class HashDiffer(TableDiffer):
         # This saves time, as bisection speed is limited by ping and query performance.
         if max_rows < self.bisection_threshold or max_space_size < self.bisection_factor * 2:
             rows1, rows2 = self._threaded_call("get_values", [table1, table2])
-            diff = list(diff_sets(rows1, rows2, self.skip_sort_results))
+            diff = list(diff_sets(rows1, rows2, self.skip_sort_results, self.duplicate_rows_support))
 
             info_tree.info.set_diff(diff)
             info_tree.info.rowcounts = {1: len(rows1), 2: len(rows2)}
