@@ -4,7 +4,7 @@ import logging
 from typing import Iterator
 from operator import attrgetter
 from collections import Counter
-from itertools import repeat, chain
+from itertools import chain
 
 from dataclasses import dataclass, field
 
@@ -32,18 +32,13 @@ def diff_sets(a: list, b: list, skip_sort_results: bool, duplicate_rows_support:
         if duplicate_rows_support:
             c = Counter(b)
             c.subtract(a)
-            x = c.items()
-            for k, count in x:
-                if count < 0:
-                    sign = "-"
-                    count = -count
-                else:
-                    sign = "+"
-                yield from repeat((sign, k), count)
+            return (("+", k) if count > 0 else ("-", k) for k, count in c.items() for _ in range(abs(count)))
         else:
-            yield from chain((("-", x) for x in set(a) - set(b)), (("+", x) for x in set(b) - set(a)))
+            sa = set(a)
+            sb = set(b)
+            return chain((("-", x) for x in sa - sb), (("+", x) for x in sb - sa))
 
-    yield from gen_diff() if skip_sort_results else sorted(gen_diff(), key=lambda i: i[1])   # sort by key
+    return gen_diff() if skip_sort_results else sorted(gen_diff(), key=lambda i: i[1])   # sort by key
 
 
 @dataclass(frozen=True)

@@ -154,7 +154,7 @@ click.Context.formatter_class = MyHelpFormatter
     "--assume-unique-key",
     is_flag=True,
     help="Skip validating the uniqueness of the key column during joindiff, which is costly in non-cloud dbs."
-    "Also, disables duplicate rows support in hashdiff.",
+    "Also, disables support for duplicate rows in hashdiff, offering a small performance gain.",
 )
 @click.option(
     "--skip-sort-results",
