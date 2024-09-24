@@ -41,6 +41,8 @@ it's recommended to surround them with quotes.
   - `-v` or `--verbose` - Print extra info
   - `-i` or `--interactive` - Confirm queries, implies `--debug`
   - `--json` - Print JSONL output for machine readability
+  - `--skip-sort-results` - Skip sorting the hashdiff output by key for better performance.
+                            Entries with the same key but different column values may not appear adjacent in the output.
   - `--min-age` - Considers only rows older than specified. Useful for specifying replication lag.
                   Example: `--min-age=5min` ignores rows from the last 5 minutes.
                   Valid units: `d, days, h, hours, min, minutes, mon, months, s, seconds, w, weeks, y, years`
@@ -57,6 +59,7 @@ it's recommended to surround them with quotes.
                             Use `%t` in the name to place a timestamp.
                             Example: `-m test_mat_%t`
   - `--assume-unique-key` - Skip validating the uniqueness of the key column during joindiff, which is costly in non-cloud dbs.
+                            Also, disables support for duplicate rows in hashdiff, offering a small performance gain.
   - `--sample-exclusive-rows` - Sample several rows that only appear in one of the tables, but not the other. Use with `-s`.
   - `--materialize-all-rows` -  Materialize every row, even if they are the same, instead of just the differing rows.
   - `--table-write-limit` - Maximum number of rows to write when creating materialized or sample tables, per thread. Default=1000.

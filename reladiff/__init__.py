@@ -71,6 +71,7 @@ def diff_tables(
     # When should we stop bisecting and compare locally (in row count; hashdiff only)
     bisection_threshold: int = DEFAULT_BISECTION_THRESHOLD,
     # Enable/disable validating that the key columns are unique. (joindiff only)
+    # Enable/disable support for duplicate rows, offering a small performance gain. (hashdiff only)
     validate_unique_key: bool = True,
     # Enable/disable sampling of exclusive rows. Creates a temporary table. (joindiff only)
     sample_exclusive_rows: bool = False,
@@ -107,7 +108,9 @@ def diff_tables(
         bisection_factor (int): Into how many segments to bisect per iteration. (Used when algorithm is `HASHDIFF`)
         bisection_threshold (Number): Minimal row count of segment to bisect, otherwise download
                                       and compare locally. (Used when algorithm is `HASHDIFF`).
-        validate_unique_key (bool): Enable/disable validating that the key columns are unique. (used for `JOINDIFF`. default: True)
+        validate_unique_key (bool): Enable/disable validating that the key columns are unique (`JOINDIFF`).
+                                    Enable/disable support for duplicate rows, offering a small performance gain (`HASHDIFF`).
+                                    (default: True)
                                     Single query, and can't be threaded, so it's very slow on non-cloud dbs.
                                     Future versions will detect UNIQUE constraints in the schema.
         sample_exclusive_rows (bool): Enable/disable sampling of exclusive rows. Creates a temporary table. (used for `JOINDIFF`. default: False)
