@@ -46,7 +46,7 @@ def diff_tables(
     table2: TableSegment,
     *,
     # Name of the key column, which uniquely identifies each row (usually id)
-    key_columns: Tuple[str, ...] = None,
+    key_columns: Union[Tuple[str, ...], str]  = None,
     # Name of updated column, which signals that rows changed (usually updated_at or last_update)
     update_column: str = None,
     # Extra columns to compare
@@ -89,7 +89,7 @@ def diff_tables(
     """Finds the diff between table1 and table2.
 
     Parameters:
-        key_columns (Tuple[str, ...]): Name of the key column, which uniquely identifies each row (usually id)
+        key_columns (Union[Tuple[str, ...], str]): Name of the key column, which uniquely identifies each row (usually id)
         update_column (str, optional): Name of updated column, which signals that rows changed.
                                        Usually updated_at or last_update.  Used by `min_update` and `max_update`.
         extra_columns (Tuple[str, ...], optional): Extra columns to compare
