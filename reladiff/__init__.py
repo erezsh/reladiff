@@ -1,4 +1,4 @@
-from typing import Tuple, Optional, Union, Iterable
+from typing import Tuple, Iterable, Optional, Union
 
 from sqeleton.abcs import DbTime, DbPath
 
