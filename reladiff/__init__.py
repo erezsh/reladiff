@@ -15,7 +15,7 @@ __version__ = "0.5.3"
 def connect_to_table(
     db_info: Union[str, dict],
     table_name: Union[DbPath, str],
-    key_columns: Union[str, Sequence[str]] = ("id",),
+    key_columns: Union[Iterable[str], str] = ("id",),
     thread_count: Optional[int] = 1,
     **kwargs,
 ) -> TableSegment:
