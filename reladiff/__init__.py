@@ -46,7 +46,7 @@ def diff_tables(
     table2: TableSegment,
     *,
     # Name of the key column, which uniquely identifies each row (usually id)
-    key_columns: Union[Iterable[str], str]  = None,
+    key_columns: Union[Iterable[str], str] = None,
     # Name of updated column, which signals that rows changed (usually updated_at or last_update)
     update_column: str = None,
     # Extra columns to compare
