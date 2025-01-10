@@ -1,4 +1,4 @@
-from typing import Sequence, Tuple, Iterable, Optional, Union
+from typing import Sequence, Tuple, Optional, Union
 
 from sqeleton.abcs import DbTime, DbPath
 
@@ -46,7 +46,7 @@ def diff_tables(
     table2: TableSegment,
     *,
     # Name of the key column, which uniquely identifies each row (usually id)
-    key_columns: Sequence[str] = None,
+    key_columns: Tuple[str, ...] = None,
     # Name of updated column, which signals that rows changed (usually updated_at or last_update)
     update_column: str = None,
     # Extra columns to compare
