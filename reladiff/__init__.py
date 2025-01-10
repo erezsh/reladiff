@@ -146,7 +146,7 @@ def diff_tables(
     if isinstance(key_columns, str):
         key_columns = (key_columns,)
     else:
-        key_columns = tuple(key_columns)
+        key_columns = tuple(key_columns or ())
 
     tables = [table1, table2]
     override_attrs = {
