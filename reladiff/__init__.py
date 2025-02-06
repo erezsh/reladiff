@@ -13,7 +13,7 @@ __version__ = "0.5.3"
 
 
 def connect_to_table(
-    db_info: Union[str, dict],
+    db_info: Union[str, dict, object],
     table_name: Union[DbPath, str],
     key_columns: Union[str, Sequence[str]] = ("id",),
     thread_count: Optional[int] = 1,
@@ -22,7 +22,7 @@ def connect_to_table(
     """Connects to the given database, and creates a TableSegment instance
 
     Parameters:
-        db_info: Either a URI string, or a dict of connection options.
+        db_info: Either a URI string, dict of connection options or a reladiff connection object.
         table_name: Name of the table as a string, or a tuple that signifies the path.
         key_columns: Names of the key columns
         thread_count: Number of threads for this connection (only if using a threadpooled db implementation)
@@ -32,8 +32,10 @@ def connect_to_table(
     """
     if isinstance(key_columns, str):
         key_columns = (key_columns,)
-
-    db = connect(db_info, thread_count=thread_count)
+    if isinstance(db_info,str) or isinstance(db_info,dict):
+        db = connect(db_info, thread_count=thread_count)
+    elif isinstance(db_info, object):
+        db = db_info
 
     if isinstance(table_name, str):
         table_name = db.parse_table_name(table_name)
