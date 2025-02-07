@@ -13,7 +13,7 @@ __version__ = "0.5.3"
 
 
 def connect_to_table(
-    db_info: Union[str, dict, object],
+    db_info: Union[str, dict, AbstractDatabase],
     table_name: Union[DbPath, str],
     key_columns: Union[str, Sequence[str]] = ("id",),
     thread_count: Optional[int] = 1,
