@@ -32,10 +32,10 @@ def connect_to_table(
     """
     if isinstance(key_columns, str):
         key_columns = (key_columns,)
-    if isinstance(db_info,str) or isinstance(db_info,dict):
-        db = connect(db_info, thread_count=thread_count)
-    elif isinstance(db_info, AbstractDatabase):
+    if isinstance(db_info, AbstractDatabase):
         db = db_info
+    else:
+        db = connect(db_info, thread_count=thread_count)
 
     if isinstance(table_name, str):
         table_name = db.parse_table_name(table_name)
