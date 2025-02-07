@@ -1,6 +1,6 @@
 from typing import Sequence, Tuple, Iterable, Optional, Union
 
-from sqeleton.abcs import DbTime, DbPath
+from sqeleton.abcs import DbTime, DbPath, AbstractDatabase
 
 from .databases import connect
 from .diff_tables import Algorithm, TableDiffer, DiffResultWrapper
@@ -34,7 +34,7 @@ def connect_to_table(
         key_columns = (key_columns,)
     if isinstance(db_info,str) or isinstance(db_info,dict):
         db = connect(db_info, thread_count=thread_count)
-    elif isinstance(db_info, object):
+    elif isinstance(db_info, AbstractDatabase):
         db = db_info
 
     if isinstance(table_name, str):
