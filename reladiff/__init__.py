@@ -22,7 +22,7 @@ def connect_to_table(
     """Connects to the given database, and creates a TableSegment instance
 
     Parameters:
-        db_info: Either a URI string, dict of connection options or a reladiff connection object.
+        db_info: Either a URI string, dict of connection options or a reladiff AbstractDatabase type.
         table_name: Name of the table as a string, or a tuple that signifies the path.
         key_columns: Names of the key columns
         thread_count: Number of threads for this connection (only if using a threadpooled db implementation)
