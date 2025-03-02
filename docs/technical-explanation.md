@@ -89,7 +89,7 @@ something like this, depending on the database:
 
 ```sql
 SELECT count(*),
-    sum(cast(conv(substring(md5(concat(cast(id as char), cast(timestamp as char))), 18), 16, 10) as unsigned))
+    sum(cast(conv(substring(md5(concat(cast(id as char), cast(updated_at as char))), 18), 16, 10) as unsigned))
 FROM `rating_del1`
 WHERE (id >= 1) AND (id < 100000)
 ```
