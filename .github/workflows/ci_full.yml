@@ -10,6 +10,7 @@ on:
     paths:
       - '**.py'
       - 'pyproject.toml'
+      - 'poetry.lock'
       - '.github/workflows/**'
       - 'docker-compose.yml'
       - '!dev/**'
