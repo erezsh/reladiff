@@ -101,7 +101,7 @@ Read our detailed instructions:
 reladiff \
   postgresql:/// \
   events \
-  "snowflake://<username>:<password>@<password>/<DATABASE>/<SCHEMA>?warehouse=<WAREHOUSE>&role=<ROLE>" \
+  "snowflake://<username>:<password>@<host>/<DATABASE>/<SCHEMA>?warehouse=<WAREHOUSE>&role=<ROLE>" \
   events \
   -k event_id \         # Identifier of event
   -c event_data \       # Extra column to compare
