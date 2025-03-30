@@ -1,9 +1,10 @@
 import time
-from typing import List, Tuple
+from typing import List, Tuple, Dict
 import logging
 from itertools import product
 
 from runtype import dataclass
+from dataclasses import field
 
 from .utils import safezip, Vector
 from sqeleton.utils import ArithString, split_space
@@ -116,6 +117,7 @@ class TableSegment:
     key_columns: Tuple[str, ...]
     update_column: str = None
     extra_columns: Tuple[str, ...] = ()
+    transform_columns: Dict[str, str] = field(default_factory=dict)
 
     # Restrict the segment
     min_key: Vector = None
@@ -155,7 +157,7 @@ class TableSegment:
         if is_empty_table and not allow_empty_table:
             raise EmptyTable(f"Table {self.table_path} is empty. Use --allow-empty-tables to disable this protection.", self)
 
-        res = self.new(_schema=create_schema(self.database, self.table_path, schema, self.case_sensitive))
+        res = self.new(_schema=create_schema(self.database, self.table_path, schema, self.case_sensitive), transform_rules = self.transform_rules)
 
         return EmptyTableSegment(res) if is_empty_table else res
 
@@ -167,7 +169,7 @@ class TableSegment:
         return self._with_raw_schema(
             self.database.query_table_schema(self.table_path), refine=refine, allow_empty_table=allow_empty_table
         )
-    
+
     def _cast_col_value(self, col, value):
         """Cast the value to the right type, based on the type of the column
 
@@ -250,7 +252,14 @@ class TableSegment:
 
     @property
     def _relevant_columns_repr(self) -> List[Expr]:
-        return [NormalizeAsString(this[c]) for c in self.relevant_columns]
+        expressions = []
+        for c in self.relevant_columns: #smks-fix
+            if c in self.transform_rules:
+                transform_expr = self.transform_rules[c]
+                expressions.append(NormalizeAsString(Code(transform_expr.format(column=this[c])), self._schema[c]))
+            else:
+                expressions.append(NormalizeAsString(this[c], self._schema[c]))
+        return expressions
 
     def count(self) -> int:
         """Count how many rows are in the segment, in one pass."""
