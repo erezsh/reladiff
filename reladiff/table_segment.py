@@ -99,6 +99,11 @@ class TableSegment:
         update_column (str, optional): Name of updated column, which signals that rows changed.
                                        Usually updated_at or last_update. Used by `min_update` and `max_update`.
         extra_columns (Tuple[str, ...], optional): Extra columns to compare
+        transform_columns (Dict[str, str], optional): A dictionary mapping column names to SQL transformation expressions.
+                                                      These expressions are applied directly to the specified columns within the
+                                                      comparison query, *before* the data is hashed or compared. Useful for
+                                                      on-the-fly normalization (e.g., type casting, timezone conversions) without
+                                                      requiring intermediate views or staging tables. Defaults to an empty dict.
         min_key (:data:`Vector`, optional): Lowest key value, used to restrict the segment
         max_key (:data:`Vector`, optional): Highest key value, used to restrict the segment
         min_update (:data:`DbTime`, optional): Lowest update_column value, used to restrict the segment
@@ -157,7 +162,7 @@ class TableSegment:
         if is_empty_table and not allow_empty_table:
             raise EmptyTable(f"Table {self.table_path} is empty. Use --allow-empty-tables to disable this protection.", self)
 
-        res = self.new(_schema=create_schema(self.database, self.table_path, schema, self.case_sensitive), transform_rules = self.transform_rules)
+        res = self.new(_schema=create_schema(self.database, self.table_path, schema, self.case_sensitive), transform_columns = self.transform_columns)
 
         return EmptyTableSegment(res) if is_empty_table else res
 
@@ -254,8 +259,8 @@ class TableSegment:
     def _relevant_columns_repr(self) -> List[Expr]:
         expressions = []
         for c in self.relevant_columns: #smks-fix
-            if c in self.transform_rules:
-                transform_expr = self.transform_rules[c]
+            if c in self.transform_columns:
+                transform_expr = self.transform_columns[c]
                 expressions.append(NormalizeAsString(Code(transform_expr.format(column=this[c])), self._schema[c]))
             else:
                 expressions.append(NormalizeAsString(this[c], self._schema[c]))
