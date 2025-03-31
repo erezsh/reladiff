@@ -314,13 +314,8 @@ class JoinDiffer(TableDiffer):
         a = table1.make_select()
         b = table2.make_select()
 
-        def get_expr(table_alias, col_name, transform_dict):
-            if col_name in transform_dict:
-                return Code(transform_dict[col_name])
-            else:
-                return table_alias[col_name]
-
         # Get transformed expressions for both tables
+        # Displayed output value also transformed to be similar with Hashdiffer
         is_diff_cols = {}
         a_cols = {}
         b_cols = {}
