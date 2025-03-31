@@ -258,7 +258,7 @@ class TableSegment:
     @property
     def _relevant_columns_repr(self) -> List[Expr]:
         expressions = []
-        for c in self.relevant_columns: #smks-fix
+        for c in self.relevant_columns:
             if c in self.transform_columns:
                 transform_expr = self.transform_columns[c]
                 expressions.append(NormalizeAsString(Code(transform_expr.format(column=this[c])), self._schema[c]))

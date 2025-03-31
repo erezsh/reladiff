@@ -314,10 +314,25 @@ class JoinDiffer(TableDiffer):
         a = table1.make_select()
         b = table2.make_select()
 
-        is_diff_cols = {f"is_diff_{c1}": bool_to_int(a[c1].is_distinct_from(b[c2])) for c1, c2 in safezip(cols1, cols2)}
+        def get_expr(table_alias, col_name, transform_dict):
+            if col_name in transform_dict:
+                return Code(transform_dict[col_name])
+            else:
+                return table_alias[col_name]
 
-        a_cols = {f"{c}_a": NormalizeAsString(a[c]) for c in cols1}
-        b_cols = {f"{c}_b": NormalizeAsString(b[c]) for c in cols2}
+        # Get transformed expressions for both tables
+        is_diff_cols = {}
+        a_cols = {}
+        b_cols = {}
+        for c1, c2 in safezip(cols1, cols2):
+            ovrrd_c1 = table1.transform_columns.get(c1)
+            ovrrd_c2 = table2.transform_columns.get(c2)
+            expr_a = NormalizeAsString(Code(ovrrd_c1) if ovrrd_c1 else a[c1], table1._schema[c1])
+            expr_b = NormalizeAsString(Code(ovrrd_c2) if ovrrd_c2 else b[c2], table2._schema[c2])
+            is_diff_cols[f"is_diff_{c1}"] = bool_to_int(expr_a.is_distinct_from(expr_b))
+            a_cols[f"{c1}_a"] = expr_a
+            b_cols[f"{c2}_b"] = expr_b
+
         # Order columns as col1_a, col1_b, col2_a, col2_b, etc.
         cols = {k: v for k, v in chain(*zip(a_cols.items(), b_cols.items()))}
 
