@@ -29,6 +29,8 @@ from sqeleton.queries import (
 )
 from sqeleton.queries.ast_classes import Concat, Count, Expr, Random, TablePath, Code, ITable
 from sqeleton.queries.extras import NormalizeAsString
+from sqeleton.queries.ast_classes import LazyOps, ExprNode
+from typing import Optional, Any
 
 from .info_tree import InfoTree
 
@@ -42,6 +44,12 @@ from .thread_utils import ThreadedYielder
 logger = logging.getLogger("joindiff_tables")
 
 TABLE_WRITE_LIMIT = 1000
+
+@dataclass
+class OverrideNormalizeAsString(NormalizeAsString, LazyOps, ExprNode):
+    expr: ExprNode
+    expr_type: Optional[Any] = None # Match type hint of NormalizeAsString
+    type = str
 
 
 def merge_dicts(dicts):
@@ -322,8 +330,8 @@ class JoinDiffer(TableDiffer):
         for c1, c2 in safezip(cols1, cols2):
             ovrrd_c1 = table1.transform_columns.get(c1)
             ovrrd_c2 = table2.transform_columns.get(c2)
-            expr_a = NormalizeAsString(Code(ovrrd_c1) if ovrrd_c1 else a[c1], table1._schema[c1])
-            expr_b = NormalizeAsString(Code(ovrrd_c2) if ovrrd_c2 else b[c2], table2._schema[c2])
+            expr_a = OverrideNormalizeAsString(Code(ovrrd_c1) if ovrrd_c1 else a[c1], table1._schema[c1])
+            expr_b = OverrideNormalizeAsString(Code(ovrrd_c2) if ovrrd_c2 else b[c2], table2._schema[c2])
             is_diff_cols[f"is_diff_{c1}"] = bool_to_int(expr_a.is_distinct_from(expr_b))
             a_cols[f"{c1}_a"] = expr_a
             b_cols[f"{c2}_b"] = expr_b
