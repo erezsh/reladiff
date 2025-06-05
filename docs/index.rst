@@ -57,8 +57,9 @@ Resources
     - :doc:`supported-databases`
     - :doc:`python-api`
     - :doc:`technical-explanation`
-- Contributor Documentation
+- Developer Documentation
    - :doc:`new-database-driver-guide`
+    - In-depth technical blog post: `<https://eshsoft.com/blog/how-reladiff-works>`_
 
 - Other links
     - Github: `<https://github.com/erezsh/reladiff>`_
