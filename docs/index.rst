@@ -52,14 +52,14 @@ Resources
 
 
 - User Documentation
-    - :doc:`install`
-    - :doc:`how-to-use`
-    - :doc:`supported-databases`
-    - :doc:`python-api`
-    - :doc:`technical-explanation`
+   - :doc:`install`
+   - :doc:`how-to-use`
+   - :doc:`supported-databases`
+   - :doc:`python-api`
+   - :doc:`technical-explanation`
 - Developer Documentation
    - :doc:`new-database-driver-guide`
-    - In-depth technical blog post: `<https://eshsoft.com/blog/how-reladiff-works>`_
+   - `How Reladiff works - a deep-dive technical blog post  <https://eshsoft.com/blog/how-reladiff-works>`_
 
 - Other links
-    - Github: `<https://github.com/erezsh/reladiff>`_
+   - Github: `<https://github.com/erezsh/reladiff>`_
