@@ -117,7 +117,10 @@ class HashDiffer(TableDiffer):
 
             elif isinstance(col1, ColType_UUID):
                 if not isinstance(col2, ColType_UUID):
-                    raise TypeError(f"Incompatible types for column '{c1}':  {col1} <-> {col2}")
+                    if isinstance(col1, StringType) and isinstance(col2, StringType):
+                        pass  # Allow String_UUID to be compared to Text.
+                    else:
+                        raise TypeError(f"Incompatible types for column '{c1}':  {col1} <-> {col2}")
 
             elif isinstance(col1, StringType):
                 if not isinstance(col2, StringType):
