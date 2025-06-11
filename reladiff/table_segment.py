@@ -335,6 +335,7 @@ class TableSegment:
 @dataclass
 class EmptyTableSegment:
     _table_segment: TableSegment
+    transform_columns: Dict[str, str] = field(default_factory=dict)
 
     def approximate_size(self):
         return 0
