@@ -29,6 +29,7 @@ from sqeleton.queries import (
 )
 from sqeleton.queries.ast_classes import Concat, Count, Expr, Random, TablePath, Code, ITable
 from sqeleton.queries.extras import NormalizeAsString
+from sqeleton.queries.ast_classes import IsDistinctFrom
 
 from .info_tree import InfoTree
 
@@ -311,13 +312,27 @@ class JoinDiffer(TableDiffer):
         if len(cols1) != len(cols2):
             raise ValueError("The provided columns are of a different count")
 
-        a = table1.make_select()
-        b = table2.make_select()
+        a = table1.make_select().alias("tbl_a")
+        b = table2.make_select().alias("tbl_b")
 
-        is_diff_cols = {f"is_diff_{c1}": bool_to_int(a[c1].is_distinct_from(b[c2])) for c1, c2 in safezip(cols1, cols2)}
+        # Create a compiler for transform_cols
+        compiler = Compiler(db, _is_root=False).add_table_context(a, b)
 
-        a_cols = {f"{c}_a": NormalizeAsString(a[c]) for c in cols1}
-        b_cols = {f"{c}_b": NormalizeAsString(b[c]) for c in cols2}
+        # Get transformed expressions for both tables
+        # Displayed output value also transformed to be similar with Hashdiffer
+        is_diff_cols = {}
+        a_cols = {}
+        b_cols = {}
+        for c1, c2 in safezip(cols1, cols2):
+            # Compile the transformation expression to have aliasing
+            expr_a = table1._get_column_transforms(c1, compiler.compile(a[c1])) or a[c1]
+            expr_b = table2._get_column_transforms(c2, compiler.compile(b[c2])) or b[c2]
+
+            # Normalize only needed for select #70
+            is_diff_cols[f"is_diff_{c1}"] = bool_to_int(IsDistinctFrom(expr_a, expr_b))
+            a_cols[f"{c1}_a"] = NormalizeAsString(expr_a, table1._schema[c1])
+            b_cols[f"{c2}_b"] = NormalizeAsString(expr_b, table2._schema[c2])
+
         # Order columns as col1_a, col1_b, col2_a, col2_b, etc.
         cols = {k: v for k, v in chain(*zip(a_cols.items(), b_cols.items()))}
 

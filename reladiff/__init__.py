@@ -129,6 +129,11 @@ def diff_tables(
         them directly when creating each :class:`TableSegment`.
 
     Note:
+        Column transformations using SQL expressions can be configured using the `transform_columns` attribute when creating
+        the :class:`TableSegment` instances for `table1` and `table2`. As transformations are typically specific to either
+        the source or target database, this parameter is not overridden directly in `diff_tables`.
+
+    Note:
         It is recommended to call .close() on the returned object when done, to release thread-pool. Alternatively, you may use it as a context manager.
 
     Example:

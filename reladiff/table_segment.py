@@ -1,9 +1,10 @@
 import time
-from typing import List, Tuple
+from typing import List, Tuple, Dict
 import logging
 from itertools import product
 
 from runtype import dataclass
+from dataclasses import field
 
 from .utils import safezip, Vector
 from sqeleton.utils import ArithString, split_space
@@ -11,6 +12,7 @@ from sqeleton.databases import Database, DbPath, DbKey, DbTime
 from sqeleton.abcs.database_types import String_UUID
 from sqeleton.schema import Schema, create_schema
 from sqeleton.queries import Count, Checksum, SKIP, table, this, Expr, min_, max_, Code
+from sqeleton.queries.ast_classes import BinBoolOp
 from sqeleton.queries.extras import ApplyFuncAndNormalizeAsString, NormalizeAsString
 
 logger = logging.getLogger("table_segment")
@@ -98,6 +100,11 @@ class TableSegment:
         update_column (str, optional): Name of updated column, which signals that rows changed.
                                        Usually updated_at or last_update. Used by `min_update` and `max_update`.
         extra_columns (Tuple[str, ...], optional): Extra columns to compare
+        transform_columns (Dict[str, str], optional): A dictionary mapping column names to SQL transformation expressions.
+                                                      These expressions are applied directly to the specified columns within the
+                                                      comparison query, *before* the data is hashed or compared. Useful for
+                                                      on-the-fly normalization (e.g., type casting, timezone conversions) without
+                                                      requiring intermediate views or staging tables. Defaults to an empty dict.
         min_key (:data:`Vector`, optional): Lowest key value, used to restrict the segment
         max_key (:data:`Vector`, optional): Highest key value, used to restrict the segment
         min_update (:data:`DbTime`, optional): Lowest update_column value, used to restrict the segment
@@ -116,6 +123,7 @@ class TableSegment:
     key_columns: Tuple[str, ...]
     update_column: str = None
     extra_columns: Tuple[str, ...] = ()
+    transform_columns: Dict[str, str] = field(default_factory=dict)
 
     # Restrict the segment
     min_key: Vector = None
@@ -155,7 +163,7 @@ class TableSegment:
         if is_empty_table and not allow_empty_table:
             raise EmptyTable(f"Table {self.table_path} is empty. Use --allow-empty-tables to disable this protection.", self)
 
-        res = self.new(_schema=create_schema(self.database, self.table_path, schema, self.case_sensitive))
+        res = self.new(_schema=create_schema(self.database, self.table_path, schema, self.case_sensitive), transform_columns = self.transform_columns)
 
         return EmptyTableSegment(res) if is_empty_table else res
 
@@ -167,7 +175,7 @@ class TableSegment:
         return self._with_raw_schema(
             self.database.query_table_schema(self.table_path), refine=refine, allow_empty_table=allow_empty_table
         )
-    
+
     def _cast_col_value(self, col, value):
         """Cast the value to the right type, based on the type of the column
 
@@ -179,15 +187,27 @@ class TableSegment:
             return str(value)
         return value
 
+    def _get_column_transforms(self, col_name: str, aliased_col=None) -> Expr:
+        """Get the Column Expression from the Transform Rules, if the column is present
+        For hashdiff - aliased_col will be None
+        For joindiff - aliased_col will be the aliased column name
+        """
+        transform_expr = self.transform_columns.get(col_name)
+
+        if aliased_col:
+            return Code(transform_expr.replace(col_name, aliased_col)) if transform_expr else None
+
+        return Code(transform_expr) if transform_expr else this[col_name]
+
     def _make_key_range(self):
         if self.min_key is not None:
             for mn, k in safezip(self.min_key, self.key_columns):
                 mn = self._cast_col_value(k, mn)
-                yield mn <= this[k]
+                yield BinBoolOp(">=", [self._get_column_transforms(k), mn])
         if self.max_key is not None:
             for k, mx in safezip(self.key_columns, self.max_key):
                 mx = self._cast_col_value(k, mx)
-                yield this[k] < mx
+                yield BinBoolOp("<", [self._get_column_transforms(k), mx])
 
     def _make_update_range(self):
         if self.min_update is not None:
@@ -250,7 +270,10 @@ class TableSegment:
 
     @property
     def _relevant_columns_repr(self) -> List[Expr]:
-        return [NormalizeAsString(this[c]) for c in self.relevant_columns]
+        expressions = []
+        for c in self.relevant_columns:
+            expressions.append(NormalizeAsString(self._get_column_transforms(c), self._schema[c]))
+        return expressions
 
     def count(self) -> int:
         """Count how many rows are in the segment, in one pass."""
@@ -277,7 +300,7 @@ class TableSegment:
         """Query database for minimum and maximum key. This is used for setting the initial bounds."""
         # Normalizes the result (needed for UUIDs) after the min/max computation
         select = self.make_select().select(
-            ApplyFuncAndNormalizeAsString(this[k], f) for k in self.key_columns for f in (min_, max_)
+            ApplyFuncAndNormalizeAsString(self._get_column_transforms(k), f) for k in self.key_columns for f in (min_, max_)
         )
         result = tuple(self.database.query(select, tuple))
 
@@ -330,7 +353,7 @@ class EmptyTableSegment:
         return (0, None)
 
     def __getattr__(self, attr):
-        assert attr in ("database", "key_columns", "key_types", "relevant_columns", "_schema")
+        assert attr in ("database", "key_columns", "key_types", "relevant_columns", "_schema", "transform_columns", "_get_column_transforms")
         return getattr(self._table_segment, attr)
 
     @property
