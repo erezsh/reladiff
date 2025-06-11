@@ -29,6 +29,7 @@ from sqeleton.queries import (
 )
 from sqeleton.queries.ast_classes import Concat, Count, Expr, Random, TablePath, Code, ITable
 from sqeleton.queries.extras import NormalizeAsString
+from sqeleton.queries.ast_classes import IsDistinctFrom
 
 from .info_tree import InfoTree
 
