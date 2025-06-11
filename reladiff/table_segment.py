@@ -335,7 +335,6 @@ class TableSegment:
 @dataclass
 class EmptyTableSegment:
     _table_segment: TableSegment
-    transform_columns: Dict[str, str] = field(default_factory=dict)
 
     def approximate_size(self):
         return 0
@@ -354,7 +353,7 @@ class EmptyTableSegment:
         return (0, None)
 
     def __getattr__(self, attr):
-        assert attr in ("database", "key_columns", "key_types", "relevant_columns", "_schema", "transform_columns")
+        assert attr in ("database", "key_columns", "key_types", "relevant_columns", "_schema", "transform_columns", "_get_column_transforms")
         return getattr(self._table_segment, attr)
 
     @property
