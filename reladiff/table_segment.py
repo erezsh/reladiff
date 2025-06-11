@@ -12,6 +12,7 @@ from sqeleton.databases import Database, DbPath, DbKey, DbTime
 from sqeleton.abcs.database_types import String_UUID
 from sqeleton.schema import Schema, create_schema
 from sqeleton.queries import Count, Checksum, SKIP, table, this, Expr, min_, max_, Code
+from sqeleton.queries.ast_classes import BinBoolOp
 from sqeleton.queries.extras import ApplyFuncAndNormalizeAsString, NormalizeAsString
 
 logger = logging.getLogger("table_segment")
@@ -186,15 +187,27 @@ class TableSegment:
             return str(value)
         return value
 
+    def _get_column_transforms(self, col_name: str, aliased_col=None) -> Expr:
+        """Get the Column Expression from the Transform Rules, if the column is present
+        For hashdiff - aliased_col will be None
+        For joindiff - aliased_col will be the aliased column name
+        """
+        transform_expr = self.transform_columns.get(col_name)
+
+        if aliased_col:
+            return Code(transform_expr.replace(col_name, aliased_col)) if transform_expr else None
+
+        return Code(transform_expr) if transform_expr else this[col_name]
+
     def _make_key_range(self):
         if self.min_key is not None:
             for mn, k in safezip(self.min_key, self.key_columns):
                 mn = self._cast_col_value(k, mn)
-                yield mn <= this[k]
+                yield BinBoolOp(">=", [self._get_column_transforms(k), mn])
         if self.max_key is not None:
             for k, mx in safezip(self.key_columns, self.max_key):
                 mx = self._cast_col_value(k, mx)
-                yield this[k] < mx
+                yield BinBoolOp("<", [self._get_column_transforms(k), mx])
 
     def _make_update_range(self):
         if self.min_update is not None:
@@ -259,11 +272,7 @@ class TableSegment:
     def _relevant_columns_repr(self) -> List[Expr]:
         expressions = []
         for c in self.relevant_columns:
-            if c in self.transform_columns:
-                transform_expr = self.transform_columns[c]
-                expressions.append(NormalizeAsString(Code(transform_expr.format(column=this[c])), self._schema[c]))
-            else:
-                expressions.append(NormalizeAsString(this[c], self._schema[c]))
+            expressions.append(NormalizeAsString(self._get_column_transforms(c), self._schema[c]))
         return expressions
 
     def count(self) -> int:
@@ -291,7 +300,7 @@ class TableSegment:
         """Query database for minimum and maximum key. This is used for setting the initial bounds."""
         # Normalizes the result (needed for UUIDs) after the min/max computation
         select = self.make_select().select(
-            ApplyFuncAndNormalizeAsString(this[k], f) for k in self.key_columns for f in (min_, max_)
+            ApplyFuncAndNormalizeAsString(self._get_column_transforms(k), f) for k in self.key_columns for f in (min_, max_)
         )
         result = tuple(self.database.query(select, tuple))
 

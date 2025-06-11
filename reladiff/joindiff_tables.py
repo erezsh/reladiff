@@ -29,7 +29,6 @@ from sqeleton.queries import (
 )
 from sqeleton.queries.ast_classes import Concat, Count, Expr, Random, TablePath, Code, ITable
 from sqeleton.queries.extras import NormalizeAsString
-from sqeleton.queries.ast_classes import IsDistinctFrom
 
 from .info_tree import InfoTree
 
@@ -324,12 +323,9 @@ class JoinDiffer(TableDiffer):
         a_cols = {}
         b_cols = {}
         for c1, c2 in safezip(cols1, cols2):
-            transform_expr_a = table1.transform_columns.get(c1)
-            transform_expr_b = table2.transform_columns.get(c2)
-
             # Compile the transformation expression to have aliasing
-            expr_a = Code(transform_expr_a.replace(c1, compiler.compile(a[c1]))) if transform_expr_a else a[c1]
-            expr_b = Code(transform_expr_b.replace(c2, compiler.compile(b[c2]))) if transform_expr_b else b[c2]
+            expr_a = table1._get_column_transforms(c1, compiler.compile(a[c1])) or a[c1]
+            expr_b = table2._get_column_transforms(c2, compiler.compile(b[c2])) or b[c2]
 
             # Normalize only needed for select #70
             is_diff_cols[f"is_diff_{c1}"] = bool_to_int(IsDistinctFrom(expr_a, expr_b))
