@@ -125,7 +125,10 @@ reladiff \
 
 ### Technical Explanation
 
-Check out this [technical explanation](https://reladiff.readthedocs.io/en/latest/technical-explanation.html) of how cross-database reladiff works.
+This [technical explanation](https://reladiff.readthedocs.io/en/latest/technical-explanation.html) provides a quick overview of how our cross-database diffing works.
+
+For an in-depth explanation, this [blog post](https://eshsoft.com/blog/how-reladiff-works) details all the major technical choices we made in our implementation.
+
 
 ### We're here to help!
 
