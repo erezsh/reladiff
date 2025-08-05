@@ -2,7 +2,7 @@ import os
 from functools import cmp_to_key
 from numbers import Number
 import logging
-from typing import Iterator, Sequence
+from typing import Iterator, Sequence, Tuple
 from operator import attrgetter
 from collections import Counter
 from itertools import chain
@@ -40,7 +40,7 @@ def compare_element(a, b):
     return 1
 
 
-def compare(a: tuple[str, Sequence], b: tuple[str, Sequence]) -> int:
+def compare(a: Tuple[str, Sequence], b: Tuple[str, Sequence]) -> int:
     """Compare two sequences of the same length.
 
     Compare a and b until the first element a[1][i] differs from b[1][i].
