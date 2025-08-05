@@ -1,7 +1,8 @@
 import os
+from functools import cmp_to_key
 from numbers import Number
 import logging
-from typing import Iterator
+from typing import Iterator, Sequence
 from operator import attrgetter
 from collections import Counter
 from itertools import chain
@@ -27,6 +28,33 @@ DEFAULT_BISECTION_FACTOR = 32
 logger = logging.getLogger("hashdiff_tables")
 
 
+def compare_element(a, b):
+    """Compare a and b, treat None as the smallest value.
+
+    Return -1 if a < b, 0 if a == b and 1 if a > b.
+    """
+    if a == b:
+        return 0
+    if b is not None and ((a is None) or (a < b)):
+        return -1
+    return 1
+
+
+def compare(a: tuple[str, Sequence], b: tuple[str, Sequence]) -> int:
+    """Compare two sequences of the same length.
+
+    Compare a and b until the first element a[1][i] differs from b[1][i].
+    See compare_element() for detailed comparison rules.
+
+    Return -1 if a < b, 0 if a == b and 1 if a > b.
+    """
+    for i in range(len(a[1])):
+        res = compare_element(a[1][i], b[1][i])
+        if res != 0:
+            return res
+    return 0
+
+
 def diff_sets(a: list, b: list, skip_sort_results: bool, duplicate_rows_support: bool) -> Iterator:
     if duplicate_rows_support:
         c = Counter(b)
@@ -36,8 +64,7 @@ def diff_sets(a: list, b: list, skip_sort_results: bool, duplicate_rows_support:
         sa = set(a)
         sb = set(b)
         diff = chain((("-", x) for x in sa - sb), (("+", x) for x in sb - sa))
-
-    return diff if skip_sort_results else sorted(diff, key=lambda i: i[1])   # sort by key
+    return diff if skip_sort_results else sorted(diff, key=cmp_to_key(compare))  # sort by key
 
 
 @dataclass(frozen=True)
