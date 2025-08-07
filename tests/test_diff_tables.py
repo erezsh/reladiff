@@ -6,7 +6,7 @@ import unittest
 from sqeleton.queries import table, this, commit
 from sqeleton.utils import ArithAlphanumeric, numberToAlphanum
 
-from reladiff.hashdiff_tables import HashDiffer
+from reladiff.hashdiff_tables import HashDiffer, compare_element, diff_sets
 from reladiff.joindiff_tables import JoinDiffer
 from reladiff.table_segment import TableSegment, split_space, Vector
 from reladiff import databases as db
@@ -1071,3 +1071,29 @@ class TestCompoundKeyAlphanum(DiffTestCase):
         self.assertEqual(diff, [("-", (uuid, "9", "9")), ("+", (uuid, "9000", "9"))])
 
         self.assertRaises(ValueError, list, differ.diff_tables(aa, a))
+
+
+class TestDiffSets(unittest.TestCase):
+    def test_compare_element(self):
+        self.assertEqual(compare_element(None, 1), -1)
+        self.assertEqual(compare_element(1, 2), -1)
+        self.assertEqual(compare_element(None, 2), -1)
+        self.assertEqual(compare_element(None, None), 0)
+        self.assertEqual(compare_element(1, 1), 0)
+        self.assertEqual(compare_element(2, 2), 0)
+        self.assertEqual(compare_element(1, None), 1)
+        self.assertEqual(compare_element(2, 1), 1)
+        self.assertEqual(compare_element(2, None), 1)
+        self.assertEqual(compare_element(None, ''), -1)
+        self.assertEqual(compare_element('', ''), 0)
+        self.assertEqual(compare_element('', None), 1)
+
+    def test_diff_sets(self):
+        res = diff_sets([(1, None)], [(1, '')], skip_sort_results=False, duplicate_rows_support=True)
+        self.assertSequenceEqual(res, [('-', (1, None)), ('+', (1, ''))])
+
+        res = diff_sets([(1, '')], [(1, None)], skip_sort_results=False, duplicate_rows_support=True)
+        self.assertSequenceEqual(res, [('+', (1, None)), ('-', (1, ''))])
+
+        res = diff_sets([(1, None), (1, None)], [(1, None)], skip_sort_results=False, duplicate_rows_support=True)
+        self.assertSequenceEqual(res, [('-', (1, None))])
