@@ -45,9 +45,25 @@ def int_product(nums: List[int]) -> int:
     return p
 
 
-def split_compound_key_space(mn: Vector, mx: Vector, count: int) -> List[List[DbKey]]:
-    """Returns a list of split-points for each key dimension, essentially returning an N-dimensional grid of split points."""
-    return [split_key_space(mn_k, mx_k, count) for mn_k, mx_k in safezip(mn, mx)]
+def split_compound_key_space(mn: Vector, mx: Vector, max_splits_per_column: int, max_segments: int) -> List[List[DbKey]]:
+    """Returns a list of split-points for each key dimension, essentially returning an N-dimensional grid of split points.
+
+    Do not split the space into more than `max_segments` segments.
+    """
+    grids = []
+    segments_left = max_segments
+    for mn_k, mx_k in safezip(mn, mx):
+        if segments_left > 1:
+            # Note, n splits correspond to n-1 segments.
+            grid = split_key_space(mn_k, mx_k, min(max_splits_per_column, segments_left-1))
+            grids.append(grid)
+            # The total number of segments in a multidimensional grid is
+            # the product of the number of the segments in each dimension.
+            segments_left //= (len(grid) - 1)
+        else:
+            # Stop splitting, return left and right bounds.
+            grids.append([mn_k, mx_k])
+    return grids
 
 
 def create_mesh_from_points(*values_per_dim: list) -> List[Tuple[Vector, Vector]]:
@@ -167,7 +183,7 @@ class TableSegment:
         return self._with_raw_schema(
             self.database.query_table_schema(self.table_path), refine=refine, allow_empty_table=allow_empty_table
         )
-    
+
     def _cast_col_value(self, col, value):
         """Cast the value to the right type, based on the type of the column
 
@@ -209,15 +225,21 @@ class TableSegment:
         select = self.make_select().select(*self._relevant_columns_repr)
         return self.database.query(select, List[Tuple])
 
+
     def choose_checkpoints(self, count: int) -> List[List[DbKey]]:
         "Suggests a bunch of evenly-spaced checkpoints to split by, including start, end."
 
         assert self.is_bounded
 
-        # Take Nth root of count, to approximate the appropriate box size
-        count = int(count ** (1 / len(self.key_columns))) or 1
+        # Take Nth root of count, to approximate the appropriate box size.
+        # This is a rough estimation of splits per dimension, because
+        #   * If the min_key and max_key are too close no splits are needed.
+        #   * If there are too many key-columns then even a single split per column result into
+        #     a very huge number of segements, larger than `count`.
+        #     For example 20 key-columns can lead to a 2**20 = 1 048 576 segments.
+        max_split_per_column = int(count ** (1 / len(self.key_columns))) or 1
 
-        return split_compound_key_space(self.min_key, self.max_key, count)
+        return split_compound_key_space(self.min_key, self.max_key, max_split_per_column, count+1)
 
     def segment_by_checkpoints(self, checkpoints: List[List[DbKey]]) -> List["TableSegment"]:
         "Split the current TableSegment to a bunch of smaller ones, separated by the given checkpoints"
