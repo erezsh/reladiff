@@ -1,4 +1,4 @@
-from typing import Sequence, Tuple, Iterable, Optional, Union
+from typing import Tuple, Iterable, Optional, Union
 
 from sqeleton.abcs import DbTime, DbPath, AbstractDatabase
 
@@ -15,7 +15,7 @@ __version__ = "0.6.0"
 def connect_to_table(
     db_info: Union[str, dict, AbstractDatabase],
     table_name: Union[DbPath, str],
-    key_columns: Union[str, Sequence[str]] = ("id",),
+    key_columns: Union[Iterable[str], str] = ("id",),
     thread_count: Optional[int] = 1,
     **kwargs,
 ) -> TableSegment:
@@ -48,7 +48,7 @@ def diff_tables(
     table2: TableSegment,
     *,
     # Name of the key column, which uniquely identifies each row (usually id)
-    key_columns: Sequence[str] = None,
+    key_columns: Optional[Union[Iterable[str], str]] = None,
     # Name of updated column, which signals that rows changed (usually updated_at or last_update)
     update_column: str = None,
     # Extra columns to compare
@@ -91,7 +91,7 @@ def diff_tables(
     """Finds the diff between table1 and table2.
 
     Parameters:
-        key_columns (Tuple[str, ...]): Name of the key column, which uniquely identifies each row (usually id)
+        key_columns (Union[Iterable[str], str], optional): Name of the key column, which uniquely identifies each row (usually id)
         update_column (str, optional): Name of updated column, which signals that rows changed.
                                        Usually updated_at or last_update.  Used by `min_update` and `max_update`.
         extra_columns (Tuple[str, ...], optional): Extra columns to compare
@@ -147,6 +147,8 @@ def diff_tables(
     """
     if isinstance(key_columns, str):
         key_columns = (key_columns,)
+    else:
+        key_columns = tuple(key_columns or ())
 
     tables = [table1, table2]
     override_attrs = {
