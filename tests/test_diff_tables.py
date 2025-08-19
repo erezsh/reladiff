@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta
+import random
 from typing import Callable
 import uuid
 import unittest
@@ -8,7 +9,7 @@ from sqeleton.utils import ArithAlphanumeric, numberToAlphanum
 
 from reladiff.hashdiff_tables import HashDiffer, compare_element, diff_sets
 from reladiff.joindiff_tables import JoinDiffer
-from reladiff.table_segment import TableSegment, split_space, Vector
+from reladiff.table_segment import TableSegment, split_space, Vector, split_compound_key_space
 from reladiff import databases as db
 
 from .common import str_to_checksum, test_each_database_in_list, DiffTestCase, table_segment
@@ -36,6 +37,41 @@ class TestUtils(unittest.TestCase):
                 for n in range(1, 32):
                     r = split_space(i, j + i + n, n)
                     assert len(r) == n, f"split_space({i}, {j+n}, {n}) = {(r)}"
+
+    def test_split_compound_key_space(self):
+        # Test that the total number of segments does not exceed max number.
+        random.seed(12345)
+        # Test 1 to 30 key dimensions.
+        for n in range(1, 30+1):
+            # Do 10 random tests.
+            for _ in range(10):
+                keys_a = random.choices([1,2,3,4], k=n)
+                keys_b = random.choices([1,2,3,4], k=n)
+                split_per_dim = random.randint(1, 32)
+                max_segments = random.randint(2, 32)
+                min_keys = [min(a, b) for a, b in zip(keys_a, keys_b)]
+                # Assert that the max key is always larger than the key.
+                max_keys = [max(a, b)+1 for a, b in zip(keys_a, keys_b)]
+                grid = split_compound_key_space(Vector(min_keys), Vector(max_keys), split_per_dim, max_segments)
+                segments = 1
+                for dim in grid:
+                    segments *= len(dim)-1   # n points correspond to n-1 segments.
+                self.assertLessEqual(segments, max_segments)
+
+        # Calculate maximum number of splits possible and ensure, that they can be achieved if requested.
+        for n in range(1, 30+1):
+            # Do 10 random tests.
+            for _ in range(10):
+                splits_per_dim = random.randint(1, 3)
+                max_segments = (splits_per_dim+1)**n
+                # Ensure that a split into `splits_per_dim` segments is possible.
+                min_keys = [1]*n
+                max_keys = [2+splits_per_dim]*n   # n splits results to n+1 segments described with n+2 points.
+                grid = split_compound_key_space(Vector(min_keys), Vector(max_keys), splits_per_dim, max_segments)
+                segments = 1
+                for dim in grid:
+                    segments *= len(dim)-1   # n points correspond to n-1 segments.
+                self.assertEqual(segments, max_segments)
 
 
 @test_each_database
